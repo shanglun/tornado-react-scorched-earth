@@ -45,3 +45,10 @@ $RECYCLE.BIN/
 Network Trash Folder
 Temporary Items
 .apdisk
+
+#==============================
+# User Defined
+#==============================
+client/node_modules
+server/*.pyc
+client/output
