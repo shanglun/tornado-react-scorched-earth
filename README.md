@@ -1,7 +1,7 @@
 # tornado-react-scorched-earth
 scorched earth clone using tornado for inter-client communcation and phaser.js and react.js for client side applicaiton.
-Short Term Todos:
 
+Short Term Todos:
 * Server:
   * communcation across multiple clients
   * set up the ability to manage a simple game
