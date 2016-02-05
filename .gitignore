@@ -46,9 +46,11 @@ Network Trash Folder
 Temporary Items
 .apdisk
 
+<<<<<<< HEAD
 #==============================
 # User Defined
 #==============================
 client/node_modules
 server/*.pyc
 client/output
+>>>>>>> origin/master
