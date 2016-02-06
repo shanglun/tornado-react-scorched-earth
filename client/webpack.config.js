@@ -2,7 +2,7 @@ var webpack = require('webpack');
 
 module.exports = {
 	entry: [
-		'webpack-dev-server/client?http://localhost:8080',
+		//'webpack-dev-server/client?http://localhost:8080',
 		'./src/index.jsx'
 	],
 	module:{
@@ -25,6 +25,6 @@ module.exports = {
 		hot: true
 	},
 	plugins: [
-		new webpack.HotModuleReplacementPlugin()
+
 	]
 };
