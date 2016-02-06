@@ -65,37 +65,26 @@
 
 	var _reactRouter2 = _interopRequireDefault(_reactRouter);
 
+	var _App = __webpack_require__(207);
+
+	var _App2 = _interopRequireDefault(_App);
+
+	var _NoMatch = __webpack_require__(208);
+
+	var _NoMatch2 = _interopRequireDefault(_NoMatch);
+
+	var _ShiriTori = __webpack_require__(209);
+
+	var _ShiriTori2 = _interopRequireDefault(_ShiriTori);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	var App = _react2.default.createClass({
-	  displayName: 'App',
-
-	  render: function render() {
-	    return _react2.default.createElement(
-	      'div',
-	      null,
-	      'Hello'
-	    );
-	  }
-	});
-
-	var NoMatch = _react2.default.createClass({
-	  displayName: 'NoMatch',
-
-	  render: function render() {
-	    return _react2.default.createElement(
-	      'div',
-	      null,
-	      'Not Found'
-	    );
-	  }
-	});
 
 	var routes = _react2.default.createElement(
 	  _reactRouter2.default,
 	  { history: _reactRouter.hashHistory },
-	  _react2.default.createElement(_reactRouter.Route, { path: '/', component: App }),
-	  _react2.default.createElement(_reactRouter.Route, { path: '*', component: NoMatch })
+	  _react2.default.createElement(_reactRouter.Route, { path: '/', component: _App2.default }),
+	  _react2.default.createElement(_reactRouter.Route, { path: '/shiritori', component: _ShiriTori2.default }),
+	  _react2.default.createElement(_reactRouter.Route, { path: '*', component: _NoMatch2.default })
 	);
 
 	_reactDom2.default.render(routes, document.getElementById('app'));
@@ -24033,6 +24022,188 @@
 
 	exports['default'] = useBasename;
 	module.exports = exports['default'];
+
+/***/ },
+/* 207 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _react = __webpack_require__(2);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	exports.default = _react2.default.createClass({
+	  displayName: "App",
+
+	  render: function render() {
+	    return _react2.default.createElement(
+	      "div",
+	      null,
+	      "Hello",
+	      _react2.default.createElement(
+	        "a",
+	        { href: "#/shiritori" },
+	        "Shiritori"
+	      )
+	    );
+	  }
+	});
+
+/***/ },
+/* 208 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _react = __webpack_require__(2);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	exports.default = _react2.default.createClass({
+	  displayName: 'NoMatch',
+
+	  render: function render() {
+	    return _react2.default.createElement(
+	      'div',
+	      null,
+	      'Not Found'
+	    );
+	  }
+	});
+
+/***/ },
+/* 209 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _react = __webpack_require__(2);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _socket = __webpack_require__(210);
+
+	var _socket2 = _interopRequireDefault(_socket);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var createReadyFunc = function createReadyFunc(component) {
+	  var func = function func() {
+	    component.setState({
+	      wsLoaded: true,
+	      words: ["hello", "oxen", "north"]
+	    });
+	  };
+	  return func;
+	};
+
+	var ShiriToriList = _react2.default.createClass({
+	  displayName: 'ShiriToriList',
+
+	  render: function render() {
+	    return _react2.default.createElement(
+	      'ul',
+	      null,
+	      this.props.words.map(function (wd) {
+	        return _react2.default.createElement(
+	          'li',
+	          { key: wd },
+	          wd
+	        );
+	      })
+	    );
+	  }
+	});
+
+	exports.default = _react2.default.createClass({
+	  displayName: 'ShiriTori',
+
+	  componentWillMount: function componentWillMount() {
+	    if (_socket2.default.readyState !== 1) {
+	      _socket2.default.onopen = createReadyFunc(this);
+	      this.setState({ wsLoaded: false });
+	    } else {
+	      createReadyFunc(this)();
+	    }
+	  },
+	  componentWillUnmount: function componentWillUnmount() {},
+	  handleSubmit: function handleSubmit(event) {
+	    event.preventDefault();
+	    console.log(event.target.nextWord.value);
+	    event.target.nextWord.value = "";
+	  },
+	  render: function render() {
+	    return _react2.default.createElement(
+	      'div',
+	      { className: 'row' },
+	      _react2.default.createElement(
+	        'div',
+	        { className: 'col-md-6 col-md-offset-3', style: { "paddingLeft": '30px' } },
+	        _react2.default.createElement(
+	          'b',
+	          null,
+	          'Shiritori'
+	        ),
+	        _react2.default.createElement(
+	          'p',
+	          null,
+	          'Socket State: ',
+	          this.state.wsLoaded ? "loaded" : "not loaded"
+	        ),
+	        this.state.words && this.state.words.length ? _react2.default.createElement(ShiriToriList, { words: this.state.words }) : "",
+	        _react2.default.createElement(
+	          'form',
+	          { onSubmit: this.handleSubmit },
+	          _react2.default.createElement(
+	            'label',
+	            { htmlFor: 'nextWord' },
+	            'Next Word: '
+	          ),
+	          _react2.default.createElement('input', { name: 'nextWord', type: 'text' })
+	        )
+	      )
+	    );
+	  }
+	});
+
+/***/ },
+/* 210 */
+/***/ function(module, exports) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	var ws = new WebSocket("ws://localhost:8888/socket");
+	ws.onopen = function () {
+	  console.log("ws opened");
+	};
+	ws.onmessage = function (evt) {
+	  console.log("evt: " + evt.data);
+	};
+	ws.onclose = function () {
+	  console.log("ws closed");
+	};
+
+	exports.default = ws;
 
 /***/ }
 /******/ ]);
