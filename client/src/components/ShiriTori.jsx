@@ -1,16 +1,6 @@
 import React from 'react';
 import ws from '../socket/socket'
 
-var createReadyFunc = function(component){
-  var func = function(){
-    component.setState({
-      wsLoaded:true,
-      words:["hello", "oxen", "north"]
-    });
-  }
-  return func;
-};
-
 var ShiriToriList = React.createClass({
   render: function(){
     return (
@@ -22,20 +12,41 @@ var ShiriToriList = React.createClass({
 });
 
 export default React.createClass({
+  getInitialState: function(){
+    return {
+      wsLoaded: false,
+      words: []
+    };
+  },
   componentWillMount: function(){
+    var setReady = ()=>{
+      this.setState({
+        wsLoaded:true,
+        words:["hello", "oxen", "north"]
+      })
+    };
     if(ws.readyState !== 1){
-      ws.onopen = createReadyFunc(this);
-      this.setState({wsLoaded:false});
+      ws.onopen = setReady;//createReadyFunc(this);
     } else {
-      createReadyFunc(this)();
-    }
+      setReady();
+    };
+    ws.onmessage = (evt)=>{
+      var jdata = JSON.parse(evt.data);
+      this.state.words.push(jdata.nextWord);
+      this.setState({
+        wsLoaded: this.state.wsLoaded,
+        words: this.state.words
+      });
+    };
   },
   componentWillUnmount:function(){
 
   },
   handleSubmit:function(event){
       event.preventDefault();
-      console.log(event.target.nextWord.value);
+      ws.send(JSON.stringify({
+        nextWord: event.target.nextWord.value
+      }));
       event.target.nextWord.value = "";
   },
   render: function(){

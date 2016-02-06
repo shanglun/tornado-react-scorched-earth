@@ -1,7 +1,7 @@
 import tornado.web
 import tornado.websocket
 from render_template import render
-
+import json
 
 class MainHandler(tornado.web.RequestHandler):
 	def get(self):
@@ -13,12 +13,14 @@ class SocketHandler(tornado.websocket.WebSocketHandler):
 		pass
 	def on_message(self,message):
 		print("got message from client: %s" %(message))
-		self.write_message("got it!")
+		data = json.loads(message)
+		json_string = {'nextWord': data['nextWord']}
+		self.write_message(json_string)
 		pass
 	def on_close(self):
 		print("socket closed")
 		pass
-			
+
 urlmap = [
 		(r"/", MainHandler),
 		(r"/socket",SocketHandler),
