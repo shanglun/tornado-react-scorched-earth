@@ -61,7 +61,7 @@ export default React.createClass({
           }
           <form onSubmit={this.handleSubmit}>
             <label htmlFor="nextWord">Next Word: </label>
-            <input name="nextWord" type="text" ></input>
+            <input name="nextWord" type="text" autoComplete="false"></input>
           </form>
         </div>
       </div>)

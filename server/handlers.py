@@ -3,6 +3,14 @@ import tornado.websocket
 from render_template import render
 import json
 
+ALL_CONN = []
+
+def handle_server_message(message):
+	global ALL_CONN
+	json_string = {'nextWord': message['nextWord']}
+	for conn in ALL_CONN:
+		conn.write_message(json_string)
+
 class MainHandler(tornado.web.RequestHandler):
 	def get(self):
 		self.write(render('main'))
@@ -10,12 +18,12 @@ class MainHandler(tornado.web.RequestHandler):
 class SocketHandler(tornado.websocket.WebSocketHandler):
 	def open(self):
 		print("socket opened")
+		global ALL_CONN
+		ALL_CONN.append(self)
 		pass
 	def on_message(self,message):
 		print("got message from client: %s" %(message))
-		data = json.loads(message)
-		json_string = {'nextWord': data['nextWord']}
-		self.write_message(json_string)
+		handle_server_message(json.loads(message))
 		pass
 	def on_close(self):
 		print("socket closed")
