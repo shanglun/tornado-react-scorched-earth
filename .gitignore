@@ -52,5 +52,5 @@ Temporary Items
 #==============================
 client/node_modules
 server/*.pyc
-client/output
+client/output/output.js
 >>>>>>> origin/master
