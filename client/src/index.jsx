@@ -3,14 +3,24 @@ import ReactDOM from 'react-dom';
 import Router, {Route} from 'react-router';
 import {hashHistory} from 'react-router';
 
+var App =  React.createClass({
+  render: function(){
+    return (
+      <div>Hello
 
-import App from './components/App';
-import NoMatch from './components/NoMatch';
-import ShiriTori from './components/ShiriTori';
+      </div>
+    )
+  }
+});
+
+var NoMatch = React.createClass({
+  render: function(){
+    return <div>Not Found</div>
+  }
+});
 
 var routes =   <Router history={hashHistory}>
     <Route path="/" component={App}/>
-    <Route path="/shiritori" component={ShiriTori}/>
     <Route path="*" component={NoMatch}/>
   </Router>
 
