@@ -16,12 +16,19 @@ class ShiriToriInstanceType:
     def check_next_word(self,nextword):
         if len(self.words) == 0:
             return True
-        lastword = self.words[-1]
+        lastword = self.words[-1]['word']
         return lastword[-1:].lower() == nextword[:1].lower()
 
-    def next_word(self,socket,nextword):
-        if self.check_next_word(nextword):
-            jstr = {'data': 'nextWord','nextWord': nextword}
-            self.words.append(nextword)
+    def next_word(self,socket,message):
+        if self.check_next_word(message['nextWord']):
+            jstr = {
+                'data': 'nextWord',
+                'playerName': message['playerName'],
+                'nextWord': message['nextWord']
+            }
+            self.words.append({
+                'playerName':message['playerName'],
+                'word': message['nextWord']
+            })
             for conn in self.players:
                 conn.write_message(json.dumps(jstr))
