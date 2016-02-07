@@ -1,15 +1,8 @@
 import tornado.web
 import tornado.websocket
 from render_template import render
-import json
 
-ALL_CONN = []
-
-def handle_server_message(message):
-	global ALL_CONN
-	json_string = {'nextWord': message['nextWord']}
-	for conn in ALL_CONN:
-		conn.write_message(json_string)
+import comm
 
 class MainHandler(tornado.web.RequestHandler):
 	def get(self):
@@ -17,16 +10,13 @@ class MainHandler(tornado.web.RequestHandler):
 
 class SocketHandler(tornado.websocket.WebSocketHandler):
 	def open(self):
-		print("socket opened")
-		global ALL_CONN
-		ALL_CONN.append(self)
+		comm.register_socket(self)
 		pass
 	def on_message(self,message):
-		print("got message from client: %s" %(message))
-		handle_server_message(json.loads(message))
+		comm.handle_server_message(self,message)
 		pass
 	def on_close(self):
-		print("socket closed")
+		comm.deregister_socket(self)
 		pass
 
 urlmap = [

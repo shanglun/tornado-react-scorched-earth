@@ -22,8 +22,11 @@ export default React.createClass({
     var setReady = ()=>{
       this.setState({
         wsLoaded:true,
-        words:["hello", "oxen", "north"]
+        words:[]
       })
+      ws.send(JSON.stringify({
+        action: 'getWords'
+      }))
     };
     if(ws.readyState !== 1){
       ws.onopen = setReady;//createReadyFunc(this);
@@ -32,11 +35,19 @@ export default React.createClass({
     };
     ws.onmessage = (evt)=>{
       var jdata = JSON.parse(evt.data);
-      this.state.words.push(jdata.nextWord);
-      this.setState({
-        wsLoaded: this.state.wsLoaded,
-        words: this.state.words
-      });
+      if(jdata.data == 'nextWord'){
+        this.state.words.push(jdata.nextWord);
+        this.setState({
+          wsLoaded: this.state.wsLoaded,
+          words: this.state.words
+        });
+      }
+      if(jdata.data=='allWords'){
+        this.setState({
+          wsLoaded:this.state.wsLoaded,
+          words:jdata.words
+        })
+      }
     };
   },
   componentWillUnmount:function(){
@@ -45,6 +56,7 @@ export default React.createClass({
   handleSubmit:function(event){
       event.preventDefault();
       ws.send(JSON.stringify({
+        action: 'nextWord',
         nextWord: event.target.nextWord.value
       }));
       event.target.nextWord.value = "";
@@ -61,7 +73,7 @@ export default React.createClass({
           }
           <form onSubmit={this.handleSubmit}>
             <label htmlFor="nextWord">Next Word: </label>
-            <input name="nextWord" type="text" autoComplete="false"></input>
+            <input name="nextWord" type="text" autoComplete="off"></input>
           </form>
         </div>
       </div>)
