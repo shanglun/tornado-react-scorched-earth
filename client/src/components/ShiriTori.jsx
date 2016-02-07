@@ -1,5 +1,6 @@
 import React from 'react';
 import ws from '../socket/socket'
+import {makeEvtHandler, makeOpenHandler, sendNextWord} from '../socket/CommMethods'
 
 var ShiriToriList = React.createClass({
   render: function(){
@@ -19,46 +20,17 @@ export default React.createClass({
     };
   },
   componentWillMount: function(){
-    var setReady = ()=>{
-      this.setState({
-        wsLoaded:true,
-        words:[]
-      })
-      ws.send(JSON.stringify({
-        action: 'getWords'
-      }))
-    };
+    var setReady = makeOpenHandler(this);
     if(ws.readyState !== 1){
       ws.onopen = setReady;//createReadyFunc(this);
     } else {
       setReady();
     };
-    ws.onmessage = (evt)=>{
-      var jdata = JSON.parse(evt.data);
-      if(jdata.data == 'nextWord'){
-        this.state.words.push(jdata.nextWord);
-        this.setState({
-          wsLoaded: this.state.wsLoaded,
-          words: this.state.words
-        });
-      }
-      if(jdata.data=='allWords'){
-        this.setState({
-          wsLoaded:this.state.wsLoaded,
-          words:jdata.words
-        })
-      }
-    };
-  },
-  componentWillUnmount:function(){
-
+    ws.onmessage = makeEvtHandler(this,ws);
   },
   handleSubmit:function(event){
       event.preventDefault();
-      ws.send(JSON.stringify({
-        action: 'nextWord',
-        nextWord: event.target.nextWord.value
-      }));
+      sendNextWord(this,ws,event.target.nextWord.value);
       event.target.nextWord.value = "";
   },
   render: function(){
