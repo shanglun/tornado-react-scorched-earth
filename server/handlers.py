@@ -22,6 +22,6 @@ class SocketHandler(tornado.websocket.WebSocketHandler):
 urlmap = [
 		(r"/", MainHandler),
 		(r"/socket",SocketHandler),
-		(r"/static/(.*)", tornado.web.StaticFileHandler, {'path':'/static'}),
+		(r"/static/(.*)", tornado.web.StaticFileHandler, {'path':'./static'}),
 		(r"/(output.js)", tornado.web.StaticFileHandler, {'path':'../client/output'})
 	]

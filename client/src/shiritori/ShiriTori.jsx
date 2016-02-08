@@ -1,14 +1,13 @@
 import React from 'react';
 import ws from '../socket/socket';
 import {makeEvtHandler, makeOpenHandler, sendNextWord}
-  from '../socket/CommMethods';
+  from './CommMethods';
 
 var ShiriToriList = React.createClass({
   render: function(){
     return (
       <ul>
         {this.props.words.map(function(wd){
-
           return <li key={wd.word}>{wd.playerName}: {wd.word}</li>
         })}
       </ul>
