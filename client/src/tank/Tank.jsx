@@ -1,6 +1,5 @@
 import React from 'react';
-
-import TankMain from './phaser/main';
+import game from './phaser/main';
 
 export default React.createClass({
   render: function(){
@@ -9,8 +8,7 @@ export default React.createClass({
     )
   },
   componentDidMount: function(){
-    this.game = new Phaser.Game(800,450, Phaser.AUTO,'game');
-    this.game.state.add('main',TankMain);
-    this.game.state.start('main')
+    //include phaser directy to get the newest version.
+    game.state.start('main')
   }
 })

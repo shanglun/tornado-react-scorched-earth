@@ -23,5 +23,6 @@ urlmap = [
 		(r"/", MainHandler),
 		(r"/socket",SocketHandler),
 		(r"/static/(.*)", tornado.web.StaticFileHandler, {'path':'./static'}),
+		(r"/static/rcs/(.*)", tornado.web.StaticFileHandler, {'path':'./static/rcs'}),
 		(r"/(output.js)", tornado.web.StaticFileHandler, {'path':'../client/output'})
 	]
