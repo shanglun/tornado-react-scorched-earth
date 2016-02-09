@@ -24,16 +24,22 @@ var main = {
     this.tank = tank;
     this.turret = turret;
     //tank.bringToTop();
+    var dimx = game.width, dimy = Math.floor(game.height/3);
+    var bmd = game.add.bitmapData(dimx,dimy);
+
+    for(var i = 0; i < dimx; i++){
+      for(var j = 0; j < dimy; j++){
+        bmd.setPixel32(i,j,0,0x0f,0xff,0xff, false);
+      }
+    }
+    bmd.context.putImageData(bmd.imageData, 0, 0);
+    bmd.dirty=true;
+    var bmdTop = Math.floor(2*game.height/3)
+    game.add.sprite(0,bmdTop,bmd);
   },
   update: function() {
     this.turret.rotation = game.physics.arcade.angleToPointer(this.turret);
   },
-  mousemove: function(pointer, x, y) {
-
-  }
-
-
-
 };
 
 game.state.add('main',main);
