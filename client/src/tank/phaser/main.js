@@ -24,21 +24,38 @@ var main = {
     this.tank = tank;
     this.turret = turret;
     //tank.bringToTop();
-    var dimx = game.width, dimy = Math.floor(game.height/3);
-    var bmd = game.add.bitmapData(dimx,dimy);
+    this.dimx = game.width;
+    this.dimy = Math.floor(game.height/3);
+    this.bmd = game.add.bitmapData(this.dimx,this.dimy);
 
-    for(var i = 0; i < dimx; i++){
-      for(var j = 0; j < dimy; j++){
-        bmd.setPixel32(i,j,0,0x0f,0xff,0xff, false);
+    for(var i = 0; i < this.dimx; i++){
+      for(var j = 0; j < this.dimy; j++){
+        this.bmd.setPixel32(i,j,0,0x0f,0xff,0xff, false);
       }
     }
-    bmd.context.putImageData(bmd.imageData, 0, 0);
-    bmd.dirty=true;
-    var bmdTop = Math.floor(2*game.height/3)
-    game.add.sprite(0,bmdTop,bmd);
+    this.bmd.context.putImageData(this.bmd.imageData, 0, 0);
+    this.bmd.dirty=true;
+    this.bmdTop = Math.floor(2*game.height/3)
+    game.add.sprite(0,this.bmdTop,this.bmd);
   },
   update: function() {
     this.turret.rotation = game.physics.arcade.angleToPointer(this.turret);
+    if (game.input.activePointer.isDown)
+    {
+
+        var clickx = game.input.x;
+        var clicky = game.input.y - this.bmdTop;
+        for(var i = 0; i < this.dimx; i++){
+          for(var j=0; j < this.dimy; j++){
+            if(i < clickx + 50 && i > clickx - 50 && j < clicky + 50 && j > clicky - 50)
+              this.bmd.setPixel32(i,j,0,0,0,0, false);
+            else
+              this.bmd.setPixel32(i,j,0,0x0f,0xff,0xff,false);
+          }
+        }
+        this.bmd.context.putImageData(this.bmd.imageData,0,0);
+        this.bmd.dirty = true;
+    }
   },
 };
 
