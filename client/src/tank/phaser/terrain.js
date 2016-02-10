@@ -17,8 +17,6 @@ export default function Terrain(game){
   for(var i = 0; i < dimx; i++){
     collisionHeights[i] = 0;
   }
-  window.ch = collisionHeights;
-  window.sm = solidityMap;
 
   var markBMD = function(){
     bmd.context.putImageData(bmd.imageData, 0, 0);
@@ -68,6 +66,15 @@ export default function Terrain(game){
     }
     return smCollHeight;
     //the tank should then fall until it hits that point.
+  }
+
+  this.bounds = ()=> {
+    var bounds = bmd.getBounds();
+    bounds.y = bmdTop;
+    return bounds;
+  }
+  this.solidityChk = function(xPos, yPos){
+    return solidityMap[xPos][yPos - bmdTop] != 0;
   }
   game.add.sprite(0,bmdTop,bmd);
 }

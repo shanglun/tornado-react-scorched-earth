@@ -22,6 +22,7 @@ export default function Tank(game,x,y){
 
   var fireball = new FireBall(game);
   var shootForce = 0;
+  this.activeBullet = ()=> fireball;
   this.update = ()=>{
     if(collidingWithTerrain()){tank.y += 1;}
     turret.x = tank.x - 6;
