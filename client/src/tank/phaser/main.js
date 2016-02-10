@@ -8,7 +8,7 @@ var main = {
 		this.stage.backgroundColor = '#04D90E'//'#B4D9E7';
     this.stage.disableVisibilityChange = true; //run while not in focus
     game.load.image("Tank","static/rcs/tank.png");
-    game.load.image("Turrent","static/rcs/nozzle.png");
+    game.load.image("Turret","static/rcs/nozzle.png");
   },
   create: function() {
     this.tank = new Tank(game, 300, 200);
