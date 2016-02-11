@@ -1,14 +1,14 @@
 import {getTerrainHeight, getTerrainTop} from './globvars';
 import FireBall from './weapons/fireball';
 
-export default function Tank(game,x,y){
+export default function Tank(game,x,y,tankRsc,turretRsc){
   var MAX_HEALTH = 200;
-  var tank = game.add.sprite(x,y,'Tank');
+  var tank = game.add.sprite(x,y,tankRsc);
   tank.scale.x = tank.scale.y = .2;
   tank.anchor.setTo(0.5,0.5);
   tank.collideWorldBounds=true;
   game.physics.arcade.enable(tank);
-  var turret = game.add.sprite(296,190,"Turret");
+  var turret = game.add.sprite(296,190, turretRsc);
   turret.scale.x = turret.scale.y = .2;
   turret.anchor.setTo(0,0.5);
   turret.order = 2;
