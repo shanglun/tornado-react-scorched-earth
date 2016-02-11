@@ -6,6 +6,7 @@ export default function Tank(game,x,y){
   tank.scale.x = tank.scale.y = .2;
   tank.anchor.setTo(0.5,0.5);
   tank.collideWorldBounds=true;
+  game.physics.arcade.enable(tank);
   var turret = game.add.sprite(296,190,"Turret");
   turret.scale.x = turret.scale.y = .2;
   turret.anchor.setTo(0,0.5);
@@ -37,7 +38,6 @@ export default function Tank(game,x,y){
       }
     }
     fireball.update();
-
   }
-
+  this.bounds = ()=>tank.getBounds();
 }

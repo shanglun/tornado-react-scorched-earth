@@ -1,6 +1,6 @@
 import Terrain from './terrain'
 import Tank from './tank'
-import {checkBulletTerrainCollision, checkBulletTankCollision} from './globvars'
+import {checkCollisions} from './globvars'
 var game = new Phaser.Game(800,450, Phaser.AUTO,'game');
 
 var main = {
@@ -19,12 +19,7 @@ var main = {
   },
   update: function() {
     this.tank.update();
-    if(checkBulletTerrainCollision(this.tank.activeBullet(),this.terrain)){
-      this.tank.setFallTo(this.terrain.calcFallHeight(
-        this.tank.getX(),
-        this.tank.getW()
-      ));
-    }
+    checkCollisions(this.tank.activeBullet(),this.terrain, this.tank);
 
   },
 };
