@@ -2,6 +2,7 @@ import {getTerrainHeight, getTerrainTop} from './globvars';
 import FireBall from './weapons/fireball';
 
 export default function Tank(game,x,y){
+  var MAX_HEALTH = 200;
   var tank = game.add.sprite(x,y,'Tank');
   tank.scale.x = tank.scale.y = .2;
   tank.anchor.setTo(0.5,0.5);
@@ -24,7 +25,20 @@ export default function Tank(game,x,y){
   var fireball = new FireBall(game);
   var shootForce = 0;
   this.activeBullet = ()=> fireball;
+
+  this.bounds = ()=>tank.getBounds();
+  tank.health = 200;
+  var labelhealth = game.add.text(20, 35, "hp: 200/200", { font: "12px Arial", fill: "#ffffff" });
+  this.damage = function(damage){
+    tank.damage(damage);
+  }
+
   this.update = ()=>{
+    if(!tank.alive) {
+      labelhealth.kill();
+      turret.kill();
+      return;
+    }
     if(collidingWithTerrain()){tank.y += 1;}
     turret.x = tank.x - 6;
     turret.y = tank.y - 10;
@@ -38,6 +52,9 @@ export default function Tank(game,x,y){
       }
     }
     fireball.update();
+    labelhealth.x = tank.x-10;
+    labelhealth.y = tank.y - 50;
+    labelhealth.text = "hp: " + tank.health +"/" + MAX_HEALTH;
   }
-  this.bounds = ()=>tank.getBounds();
+
 }

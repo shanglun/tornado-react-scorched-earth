@@ -10,6 +10,7 @@ export default function FireBall(game){
   var explosion = game.add.sprite(200,200,'explosion');
   explosion.anchor.setTo(0.5,0.5);
   var anim = explosion.animations.add('explode');
+  explosion.scale.y = explosion.scale.x = 2;
   anim.onComplete.add(function(){this.kill();},explosion);
   explosion.kill();
   var fireTime;
@@ -43,8 +44,7 @@ export default function FireBall(game){
     if(!bullet.alive) return;
     bullet.body.velocity.y += 2;
     bullet.rotation = Math.atan2(bullet.body.velocity.y, bullet.body.velocity.x);
-    if(game.input.activePointer.isDown){
-      this.explode(bullet.x, bullet.y);
-    }
   }
+  this.getBX = ()=>150; //blast X
+  this.getBY = ()=>150;
 }

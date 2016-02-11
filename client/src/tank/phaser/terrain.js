@@ -43,9 +43,10 @@ export default function Terrain(game){
   this.killTerrain = function (x, y){
     var clickx = x;
     var clicky = y - bmdTop;
+    var radius = 75;
     for(var i = 0; i < dimx; i++){
       for(var j=0; j < dimy; j++){
-        if(i < clickx + 50 && i > clickx - 50 && j < clicky + 50 && j > clicky - 50){
+        if(Math.floor(Math.sqrt(Math.pow(i-clickx,2)+Math.pow(j-clicky,2)))<radius){
           if(collisionHeights[i]<j){
             collisionHeights[i] = j;
           }

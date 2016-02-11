@@ -6,13 +6,23 @@ export function getTerrainTop(game){
   return Math.floor(2*game.height/3);
 }
 
+var checkTankDamage = function(tank, explosionX, explosionY, blastX, blastY){
+  var epRect = new Phaser.Rectangle(explosionX - blastX/2, explosionY-blastY/2,blastX,blastY);
+  var intersect = Phaser.Rectangle.intersection(tank.bounds(),epRect);
+  if(intersect.width > 0 && intersect.height > 0){
+    tank.damage(Math.floor(Math.sqrt(intersect.width * intersect.height)));
+  }
+}
+
 var processCollision = function(bullet, terrain, tank){
   terrain.killTerrain(bullet.getX(), bullet.getY());
-  bullet.explode();
+
   tank.setFallTo(terrain.calcFallHeight(
     tank.getX(),
     tank.getW()
   ));
+  checkTankDamage(tank,bullet.getX(), bullet.getY(), bullet.getBX(), bullet.getBY());
+  bullet.explode();
 }
 
 var checkBulletTerrainCollision = function(bullet, terrain, tank){
