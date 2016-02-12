@@ -28,7 +28,9 @@ export default function Tank(game,x,y,tankRsc,turretRsc){
 
   this.bounds = ()=>tank.getBounds();
   tank.health = 200;
-  let labelhealth = game.add.text(20, 35, "hp: ${MAX_HEALTH}/${MAX_HEALTH}",
+  let labelHealth = game.add.text(20, 35, `hp: ${MAX_HEALTH}/${MAX_HEALTH}`,
+    { font: "12px Arial", fill: "#ffffff" });
+  let labelForce = game.add.text(20,35, `force: ${shootForce}`,
     { font: "12px Arial", fill: "#ffffff" });
   this.damage = (damage) => tank.damage(damage);
 
@@ -42,7 +44,8 @@ export default function Tank(game,x,y,tankRsc,turretRsc){
     if(game.turnHandler.isMyTurn(this.tankId)){
       turret.rotation = game.physics.arcade.angleToPointer(turret);
       if(game.input.activePointer.isDown){
-        shootForce += 3;
+        shootForce = shootForce > 500? 0: shootForce + 3;
+
       } else {
         if(shootForce > 0){
             fireball.fire(shootForce, turret.rotation, turret.x, turret.y);
@@ -57,14 +60,18 @@ export default function Tank(game,x,y,tankRsc,turretRsc){
   let processAuxillaries = () => {
     turret.x = tank.x - 6;
     turret.y = tank.y - 10;
-    labelhealth.x = tank.x-10;
-    labelhealth.y = tank.y - 50;
-    labelhealth.text = "hp: " + tank.health +"/" + MAX_HEALTH;
+    labelHealth.x = tank.x-10;
+    labelHealth.y = tank.y - 50;
+    labelHealth.text = `hp: ${tank.health}/${MAX_HEALTH}`;
+    labelForce.x = tank.x - 10;
+    labelForce.y = tank.y - 75;
+    labelForce.text = `force: ${shootForce}`;
   }
 
   this.update = ()=>{
     if(!tank.alive) {
-      labelhealth.kill();
+      labelHealth.kill();
+      labelForce.kill();
       turret.kill();
       return;
     }
