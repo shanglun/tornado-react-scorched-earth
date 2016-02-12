@@ -1,9 +1,10 @@
-import Terrain from './terrain'
-import Tank from './tank'
-import {checkCollisions} from './globvars'
-var game = new Phaser.Game(800,450, Phaser.AUTO,'game');
+import Terrain from './terrain';
+import Tank from './tank';
+import {checkCollisions} from './gamelogic/collision';
+import TH from './gamelogic/turn'
+let game = new Phaser.Game(800,450, Phaser.AUTO,'game');
 
-var main = {
+let main = {
   preload: function() {
 		this.stage.backgroundColor = '#04D90E'//'#B4D9E7';
     this.stage.disableVisibilityChange = true; //run while not in focus
@@ -15,20 +16,21 @@ var main = {
     game.load.spritesheet('explosion','static/rcs/explosion.png',64,64,23);
   },
   create: function() {
+    game.turnHandler = new TH();
     this.tanks = [];
     this.tanks.push(new Tank(game, 200, 200, 'Tank1','Turret1'));
     this.tanks.push(new Tank(game, 600, 200, 'Tank2','Turret2'));
+    for(let tank of this.tanks){
+      game.turnHandler.register(tank);
+    }
     this.terrain = new Terrain(game);
     this.terrain.draw();
   },
   update: function() {
-    this.tanks.forEach((tank)=>{
+    for(let tank of this.tanks){
       tank.update();
-      //check collision with every tank.
       checkCollisions(tank.activeBullet(), this.terrain, this.tanks);
-    });
-    //checkCollisions(this.tank.activeBullet(),this.terrain, this.tank);
-
+    };
   },
 };
 
