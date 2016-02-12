@@ -2,6 +2,7 @@ import Terrain from './terrain';
 import Tank from './tank';
 import {checkCollisions} from './gamelogic/collision';
 import TH from './gamelogic/turn'
+import Comm from './gamelogic/comm'
 let game = new Phaser.Game(800,450, Phaser.AUTO,'game');
 
 let main = {
@@ -16,13 +17,10 @@ let main = {
     game.load.spritesheet('explosion','static/rcs/explosion.png',64,64,23);
   },
   create: function() {
-    game.turnHandler = new TH();
     this.tanks = [];
-    this.tanks.push(new Tank(game, 200, 200, 'Tank1','Turret1'));
-    this.tanks.push(new Tank(game, 600, 200, 'Tank2','Turret2'));
-    for(let tank of this.tanks){
-      game.turnHandler.register(tank);
-    }
+    game.turnHandler = new TH();
+    game.comm = new Comm(game, this.tanks);
+
     this.terrain = new Terrain(game);
     this.terrain.draw();
   },

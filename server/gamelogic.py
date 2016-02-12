@@ -32,3 +32,14 @@ class ShiriToriInstanceType:
             })
             for conn in self.players:
                 conn.write_message(json.dumps(jstr))
+
+class TankInstanceType:
+    def __init__(self):
+        self.players = []
+        self.tanks = []
+    def add_player(self,socket):
+        pass
+    def remove_player(self,socket):
+        pass
+    def restart(self):
+        pass
