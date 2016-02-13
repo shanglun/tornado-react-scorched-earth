@@ -1,27 +1,48 @@
-
-//ws.onopen = function(){console.log("ws opened");};
-//ws.onmessage = function(evt){console.log("evt: " + evt.data)};
-//ws.onclose = function(){console.log("ws closed");};
-//start by just communicating state to server.
 import Tank from '../tank';
 
-export default function Communicator(game, tankList){
-  let ws = new WebSocket("ws://localhost:8888/socket/tank");
-  ws.onopen = () => {
-    ws.send(JSON.stringify({
-      action: 'beginTank'
-    }));
-  }
-  ws.onmessage = (evt) => {
-    let msg = JSON.parse(evt.data);
+function Communicator(){
+  let ws;
+  this.init = (game, tankList) =>{
+    ws = new WebSocket("ws://localhost:8888/socket/tank");
+    ws.onopen = () => {
+      ws.send(JSON.stringify({
+        action: 'beginTank'
+      }));
+    }
 
-    if(msg.command == 'makeTanks'){
-      for(let tankdata of msg.data.tanks){
-        let tank = new Tank(game, tankdata.xPos, tankdata.yPos,
-          tankdata.TankRc,tankdata.TurretRc);
-        tankList.push(tank);
-        game.turnHandler.register(tank);
+    let registerTank = (tank)=>{
+      tank.serverDispatchShoot = (shooterId, shootForce,rotation, xPos, yPos)=>{
+        ws.send(JSON.stringify({
+          'action':'shoot',
+          'shooterId': shooterId,
+          'shootForce': shootForce,
+          'rotation': rotation,
+          'xPos': xPos,
+          'yPos': yPos
+        }));
+      }
+    }
+
+    ws.onmessage = (evt) => {
+      let msg = JSON.parse(evt.data);
+
+      if(msg.command == 'makeTanks'){
+        for(let tankdata of msg.data.tanks){
+          let tank = new Tank(game, tankdata.xPos, tankdata.yPos,
+            tankdata.TankRc,tankdata.TurretRc, tankdata.serverId);
+          tankList.push(tank);
+          registerTank(tank);
+          game.turnHandler.register(tank);
+        }
+      }
+      if(msg.command == 'shoot'){
+        for(let tank of tankList){
+          tank.processDispatchShoot(msg.data.shooterId,
+            msg.data.shootForce,msg.data.rotation, msg.data.xPos, msg.data.yPos);
+        }
       }
     }
   }
 }
+
+export default new Communicator()

@@ -1,7 +1,7 @@
 import {getTerrainHeight, getTerrainTop} from './globvars';
 import FireBall from './weapons/fireball';
 
-export default function Tank(game,x,y,tankRsc,turretRsc){
+export default function Tank(game,x,y,tankRsc,turretRsc, serverId){
   const MAX_HEALTH = 200;
   let tank = game.add.sprite(x,y,tankRsc);
   tank.scale.x = tank.scale.y = .2;
@@ -48,13 +48,19 @@ export default function Tank(game,x,y,tankRsc,turretRsc){
 
       } else {
         if(shootForce > 0){
-            fireball.fire(shootForce, turret.rotation, turret.x, turret.y);
+            this.serverDispatchShoot(serverId, shootForce, turret.rotation, turret.x, turret.y);
+            //fireball.fire(shootForce, turret.rotation, turret.x, turret.y);
             game.turnHandler.doneTurn(this.tankId);
             shootForce = 0;
         }
       }
     }
     fireball.update();
+  }
+  this.processDispatchShoot = function(shooterId,shootForce,rotation, xPos, yPos) {
+    if(serverId == shooterId){
+      fireball.fire(shootForce, rotation, xPos, yPos);
+    }
   }
 
   let processAuxillaries = () => {
@@ -80,5 +86,6 @@ export default function Tank(game,x,y,tankRsc,turretRsc){
     processAuxillaries();
   }
   this.tankId = -1;
+  this.serverId = serverId;
 
 }

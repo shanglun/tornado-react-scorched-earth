@@ -22,11 +22,13 @@ class SocketHandler(tornado.websocket.WebSocketHandler):
 
 class TankSocketHandler(tornado.websocket.WebSocketHandler):
 	def open(self):
+		commtank.register_socket(self)
 		pass
 	def on_message(self,message):
 		commtank.handle_server_message(self,message)
 		pass
 	def on_close(self):
+		commtank.deregister_socket(self)
 		pass
 
 urlmap = [

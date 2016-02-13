@@ -20,6 +20,7 @@ let processCollision = function(bullet, terrain, tanks){
 
 let checkBulletTerrainCollision = function(bullet, terrain){
   if(!bullet.explodeable()) return false;
+
   let intersect = Phaser.Rectangle.intersection(terrain.bounds(), bullet.bounds());
   if(intersect.width == 0 && intersect.height == 0){
     return false;
@@ -37,7 +38,6 @@ let checkBulletTerrainCollision = function(bullet, terrain){
 
 let checkBulletTankCollision = function(bullet, terrain, tank){
   if(!bullet.explodeableTank()) return false;
-
   let intersection = Phaser.Rectangle.intersection(tank.bounds(), bullet.bounds());
   return intersection.width > 0 && intersection.height >0;
 }

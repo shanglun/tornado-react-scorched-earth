@@ -27,7 +27,7 @@ export default function FireBall(game){
   }
 
   this.bounds = () => bullet.getBounds();
-  this.explodeable = ()=> bullet.alive;
+  this.explodeable = ()=> bullet.alive && fireTime + 300 < game.time.now;
   this.explodeableTank = ()=> bullet.alive && fireTime + 500 < game.time.now; //grace period
   this.explode = (xPos,yPos)=>{
     if(!this.explodeable()) return;

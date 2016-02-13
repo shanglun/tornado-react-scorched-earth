@@ -2,7 +2,7 @@ import Terrain from './terrain';
 import Tank from './tank';
 import {checkCollisions} from './gamelogic/collision';
 import TH from './gamelogic/turn'
-import Comm from './gamelogic/comm'
+import comm from './gamelogic/comm'
 let game = new Phaser.Game(800,450, Phaser.AUTO,'game');
 
 let main = {
@@ -19,7 +19,7 @@ let main = {
   create: function() {
     this.tanks = [];
     game.turnHandler = new TH();
-    game.comm = new Comm(game, this.tanks);
+    comm.init(game, this.tanks);
 
     this.terrain = new Terrain(game);
     this.terrain.draw();
