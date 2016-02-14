@@ -2,16 +2,29 @@ function Communicator(){
   let ws;
   let infoComp;
   let started = false;
+  let myTankId = -1;
+  let pNames = ["player1", "player2", "player3", "player4"];
   this.initInfoComp = (comp) => {
     infoComp = comp;
   }
   this.startGame = () => {
-    console.log('sending startgame message');
     ws.send(JSON.stringify({
       'action':'startGame'
     }));
   }
   this.gameStarted = () => started;
+  this.amHost = () => myTankId == 0;
+  this.getPlayerName = (serverId) => pNames[serverId];
+  this.tankIsMe = (tankId) => myTankId == tankId;
+  this.setName = (name) => {
+    ws.send(JSON.stringify({
+      'action':'setPlayerName',
+      'data':{
+        id: myTankId,
+        name: name
+      }
+    }));
+  }
   this.init = (game, tankList) =>{
     ws = new WebSocket("ws://localhost:8888/socket/tank");
     ws.onopen = () => {
@@ -35,6 +48,7 @@ function Communicator(){
       let msg = JSON.parse(evt.data);
 
       if(msg.command == 'makeTanks'){
+        myTankId = msg.data.yourTank;
         for(let tankdata of msg.data.tanks){
           let tank = new game.Tank(game, tankdata.xPos, tankdata.yPos,
             tankdata.TankRc,tankdata.TurretRc, tankdata.serverId);
@@ -42,6 +56,12 @@ function Communicator(){
           registerTank(tank);
           game.turnHandler.register(tank);
         }
+        infoComp.commMessage({
+          command:'setHost',
+          data:{
+            host: this.amHost()
+          }
+        });
       }
       if(msg.command == 'shoot'){
         for(let tank of tankList){
@@ -50,15 +70,19 @@ function Communicator(){
         }
       }
       if(msg.command == 'startGame'){
-
         started = true;
         infoComp.commMessage({
           command:'setStartState',
           data: {
-            started: started
+            started: started,
           }
         });
       }
+
+      if(msg.command = "playerName"){
+        pNames = msg.data.names;
+      }
+
     }
   }
 }

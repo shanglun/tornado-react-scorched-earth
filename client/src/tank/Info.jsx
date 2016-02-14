@@ -1,10 +1,26 @@
 import React from 'react';
 import comm from "./phaser/gamelogic/comm"
 
+let NameDiv = React.createClass({
+  render: function(){
+    let btnClass = 'btn btn-success ';
+    return (
+      <div>
+        <form onSubmit={this.props.handleSubmitName}>
+          <label htmlFor="prefname">Preferred Name:</label>
+          <input name="prefname"/>
+          <button className={btnClass}>Set Name</button>
+        </form>
+      </div>
+    );
+  }
+});
+
 export default React.createClass({
   render: function(){
-    let btnClass = 'btn btn-info';
-    if (this.state.started) btnClass += 'disabled';
+    let btnClass = 'btn btn-success ';
+    if (this.state.started) {btnClass += 'disabled ';}
+    if (!this.state.host) {btnClass += 'hidden';}
     return (<div>
         <div id="startGame">{this.state.started? "Game Started":"Game has yet to begin"}</div>
         <button
@@ -12,6 +28,7 @@ export default React.createClass({
           onClick={this.clickStartGame}>
           Start Game
         </button>
+        <NameDiv handleSubmitName={this.handleSubmitName}></NameDiv>
       </div>
     )
   },
@@ -21,6 +38,7 @@ export default React.createClass({
   getInitialState: function(){
     return {
       started: false,
+      host: false
     };
   },
   componentDidMount: function(){
@@ -28,11 +46,23 @@ export default React.createClass({
   commMessage: function(msg){
     if(msg.command == "setStartState"){
       this.setState({
-        started: msg.data.started
+        started: msg.data.started,
+        host: this.state.host
+      })
+    }
+    if(msg.command == 'setHost'){
+      this.setState({
+        started: msg.data.started,
+        host: msg.data.host
       })
     }
   },
   clickStartGame: function(){
     comm.startGame();
+  },
+  handleSubmitName: function(evt){
+    evt.preventDefault();
+    comm.setName(evt.target.prefname.value);
+    console.log(evt.target.prefname.value);
   }
 })

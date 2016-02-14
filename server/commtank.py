@@ -1,7 +1,7 @@
 import json
-from gamelogic import TankInstanceType
+from gamelogic import TankInstanceManagerType
 
-si = TankInstanceType()
+si = TankInstanceManagerType()
 
 
 def register_socket(socket):

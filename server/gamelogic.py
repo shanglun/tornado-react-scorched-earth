@@ -59,6 +59,7 @@ class TankInstanceType:
     def __init__(self):
         self.players = []
         self.tanks = []
+        self.playernames = ['player1', 'player2', 'player3','player4']
     def add_player(self,socket):
         servid = len(self.players)
         print('adding player, server id %d'%servid)
@@ -70,7 +71,6 @@ class TankInstanceType:
                 'tanks': maketankgroup(servid)
             }
         }))
-        #let existing players know
         for i in range(len(self.players)):
             print('sending maketank to existing player %d' %i)
             psocket = self.players[i]
@@ -81,13 +81,21 @@ class TankInstanceType:
                     'tanks': [maketank(servid, False)]
                 }
             }))
-        #save player socket
         self.players.append(socket)
+        #print(self.playernames)
+        for psocket in self.players:
+            psocket.write_message(json.dumps({
+                'command': 'playerName',
+                'data': {
+                    'names': self.playernames
+                }
+            }))
     def remove_player(self,socket):
         self.players.remove(socket)
     def processmessage(self,src_socket, message):
-        message = json.loads(message)
+
         if message['action'] == 'shoot':
+            print('sending shoot message to all players')
             for socket in self.players:
                 socket.write_message(json.dumps({
                     'command':'shoot',
@@ -104,5 +112,49 @@ class TankInstanceType:
                 socket.write_message(json.dumps({
                     'command':'startGame'
                 }))
-    def restart(self):
-        pass
+        elif message['action'] == 'setPlayerName':
+            self.playernames[message['data']['id']] = message['data']['name'];
+            for socket in self.players:
+                socket.write_message(json.dumps({
+                    'command': 'playerName',
+                    'data': {
+                        'names': self.playernames
+                    }
+                }))
+    def has_player(self,socket):
+        for psocket in self.players:
+            if psocket == socket:
+                return True
+        return False
+
+class TankInstanceManagerType:
+    def __init__(self):
+        self.games = []
+        self.activegame = TankInstanceType()
+        self.MAX_PLAYERS = 2
+    def add_player(self,socket):
+        self.activegame.add_player(socket)
+        if len(self.activegame.players) == self.MAX_PLAYERS:
+            self.games.append(self.activegame)
+            self.activegame = TankInstanceType()
+
+    def remove_player(self, socket):
+        if self.activegame.has_player(socket):
+            self.activegame.remove_player(socket)
+            return
+        for game in self.games:
+            if game.has_player(socket):
+                game.remove_player(socket)
+
+    def processmessage(self,src_socket,message):
+        smessage = json.loads(message)
+        if smessage['action'] == 'startGame':
+            self.games.append(self.activegame)
+            self.activegame = TankInstanceType()
+        if self.activegame.has_player(src_socket):
+            self.activegame.processmessage(src_socket, smessage)
+            return
+        for game in self.games:
+            if game.has_player(src_socket):
+                game.processmessage(src_socket,smessage)
+                return

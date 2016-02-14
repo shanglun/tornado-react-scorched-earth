@@ -33,6 +33,8 @@ export default function Tank(game,x,y,tankRsc,turretRsc, serverId){
     { font: "12px Arial", fill: "#ffffff" });
   let labelForce = game.add.text(20,35, `force: ${shootForce}`,
     { font: "12px Arial", fill: "#ffffff" });
+  let labelName = game.add.text(20,35, `name: ${'player'}`,
+    { font: "12px Arial", fill: "#ffffff" });
   this.damage = (damage) => tank.damage(damage);
 
   let processFall = ()=>{
@@ -42,17 +44,17 @@ export default function Tank(game,x,y,tankRsc,turretRsc, serverId){
   }
 
   let processWeapons = ()=>{
-    if(game.turnHandler.isMyTurn(this.tankId)){
-      turret.rotation = game.physics.arcade.angleToPointer(turret);
-      if(game.input.activePointer.isDown){
-        shootForce = shootForce > 500? 0: shootForce + 3;
+    if(comm.tankIsMe(serverId)){
+      if(game.turnHandler.isMyTurn(this.tankId)){
+        turret.rotation = game.physics.arcade.angleToPointer(turret);
+        if(game.input.activePointer.isDown){
+          shootForce = shootForce > 500? 0: shootForce + 3;
 
-      } else {
-        if(shootForce > 0){
-            this.serverDispatchShoot(serverId, shootForce, turret.rotation, turret.x, turret.y);
-            //fireball.fire(shootForce, turret.rotation, turret.x, turret.y);
-            game.turnHandler.doneTurn(this.tankId);
-            shootForce = 0;
+        } else {
+          if(shootForce > 0){
+              this.serverDispatchShoot(serverId, shootForce, turret.rotation, turret.x, turret.y);
+              shootForce = 0;
+          }
         }
       }
     }
@@ -60,7 +62,9 @@ export default function Tank(game,x,y,tankRsc,turretRsc, serverId){
   }
   this.processDispatchShoot = function(shooterId,shootForce,rotation, xPos, yPos) {
     if(serverId == shooterId){
+      turret.rotation = rotation;
       fireball.fire(shootForce, rotation, xPos, yPos);
+      game.turnHandler.doneTurn(this.tankId);
     }
   }
 
@@ -71,8 +75,12 @@ export default function Tank(game,x,y,tankRsc,turretRsc, serverId){
     labelHealth.y = tank.y - 50;
     labelHealth.text = `hp: ${tank.health}/${MAX_HEALTH}`;
     labelForce.x = tank.x - 10;
-    labelForce.y = tank.y - 75;
+    labelForce.y = tank.y - 65;
     labelForce.text = `force: ${shootForce}`;
+    labelName.x = tank.x - 10;
+    labelName.y = tank.y - 80;
+    let name = comm.getPlayerName(serverId);
+    labelName.text = `${name}`;
   }
 
   this.update = ()=>{
@@ -83,6 +91,7 @@ export default function Tank(game,x,y,tankRsc,turretRsc, serverId){
       return;
     }
     processFall();
+
     if(comm.gameStarted()) {
       processWeapons();
     }
