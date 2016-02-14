@@ -1,5 +1,6 @@
 import {getTerrainHeight, getTerrainTop} from './globvars';
 import FireBall from './weapons/fireball';
+import comm from './gamelogic/comm';
 
 export default function Tank(game,x,y,tankRsc,turretRsc, serverId){
   const MAX_HEALTH = 200;
@@ -82,7 +83,9 @@ export default function Tank(game,x,y,tankRsc,turretRsc, serverId){
       return;
     }
     processFall();
-    processWeapons();
+    if(comm.gameStarted()) {
+      processWeapons();
+    }
     processAuxillaries();
   }
   this.tankId = -1;

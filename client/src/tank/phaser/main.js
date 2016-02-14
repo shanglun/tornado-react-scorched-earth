@@ -18,6 +18,7 @@ let main = {
   },
   create: function() {
     this.tanks = [];
+    game.Tank = Tank;
     game.turnHandler = new TH();
     comm.init(game, this.tanks);
 

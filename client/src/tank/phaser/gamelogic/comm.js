@@ -1,20 +1,21 @@
-import Tank from '../tank';
-
 function Communicator(){
   let ws;
   let infoComp;
   let started = false;
   this.initInfoComp = (comp) => {
-    //relay initial game state
-    //save comp referece
-    //set up communicator methods for the comp to use. 
+    infoComp = comp;
   }
+  this.startGame = () => {
+    console.log('sending startgame message');
+    ws.send(JSON.stringify({
+      'action':'startGame'
+    }));
+  }
+  this.gameStarted = () => started;
   this.init = (game, tankList) =>{
     ws = new WebSocket("ws://localhost:8888/socket/tank");
     ws.onopen = () => {
-      ws.send(JSON.stringify({
-        action: 'beginTank'
-      }));
+
     }
 
     let registerTank = (tank)=>{
@@ -35,7 +36,7 @@ function Communicator(){
 
       if(msg.command == 'makeTanks'){
         for(let tankdata of msg.data.tanks){
-          let tank = new Tank(game, tankdata.xPos, tankdata.yPos,
+          let tank = new game.Tank(game, tankdata.xPos, tankdata.yPos,
             tankdata.TankRc,tankdata.TurretRc, tankdata.serverId);
           tankList.push(tank);
           registerTank(tank);
@@ -47,6 +48,16 @@ function Communicator(){
           tank.processDispatchShoot(msg.data.shooterId,
             msg.data.shootForce,msg.data.rotation, msg.data.xPos, msg.data.yPos);
         }
+      }
+      if(msg.command == 'startGame'){
+
+        started = true;
+        infoComp.commMessage({
+          command:'setStartState',
+          data: {
+            started: started
+          }
+        });
       }
     }
   }
