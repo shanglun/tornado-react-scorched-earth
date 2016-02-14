@@ -6,6 +6,7 @@ export default React.createClass({
       <div>
         Hello
         <a href="#/shiritori">Shiritori</a>
+        <a href="#/tank">Tank</a>
       </div>
     )
   }
