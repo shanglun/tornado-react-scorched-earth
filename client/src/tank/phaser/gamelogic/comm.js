@@ -2,6 +2,13 @@ import Tank from '../tank';
 
 function Communicator(){
   let ws;
+  let infoComp;
+  let started = false;
+  this.initInfoComp = (comp) => {
+    //relay initial game state
+    //save comp referece
+    //set up communicator methods for the comp to use. 
+  }
   this.init = (game, tankList) =>{
     ws = new WebSocket("ws://localhost:8888/socket/tank");
     ws.onopen = () => {

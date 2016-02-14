@@ -1,10 +1,13 @@
 import React from 'react';
 import game from './phaser/main';
+import InfoDiv from './Info';
 
 export default React.createClass({
   render: function(){
-    return (
-      <div id="game">Tank!</div>
+    return (<div>
+        <div id="game"></div>
+        <InfoDiv/>
+      </div>
     )
   },
   componentDidMount: function(){
