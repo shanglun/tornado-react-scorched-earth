@@ -26,7 +26,12 @@ function Communicator(){
     }));
   }
   this.init = (game, tankList) =>{
-    ws = new WebSocket("ws://localhost:8888/socket/tank");
+    if (window.location.protocol == "https:") {
+      ws = new WebSocket("wss://scorchedearthtornado.heroukapp.com:5000/socket/tank");
+    } else {
+      ws = new WebSocket("ws://scorchedearthtornado.heroukapp.com:5000/socket/tank");
+    };
+
     ws.onopen = () => {
 
     }
