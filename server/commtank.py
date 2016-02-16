@@ -1,4 +1,3 @@
-import json
 from gamelogic import TankInstanceManagerType
 
 si = TankInstanceManagerType()
@@ -12,6 +11,6 @@ def deregister_socket(socket):
     global si
     si.remove_player(socket)
 
-def handle_server_message(socket,message_string):
+def handle_server_message(socket, message_string):
     global si
     si.processmessage(socket, message_string)

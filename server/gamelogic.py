@@ -48,7 +48,8 @@ SPAWN_XPOS = [100, 700, 300, 500]
 TANK_RCS = ['Tank1', 'Tank2', 'Tank3', 'Tank4']
 TURRET_RCS = ['Turret1', 'Turret2', 'Turret3', 'Turret4']
 def maketank(tank_id, existing):
-    '''Returns the information for a single tank'''
+    '''Takes and tank id. Returns the information for a single tank
+        if the tank is for a new player, place the tank higher'''
     ypos = 250
     if not existing:
         ypos = 200
@@ -76,8 +77,8 @@ class TankInstanceType(object):
         self.tanks = []
         self.playernames = ['player1', 'player2', 'player3', 'player4']
     def add_player(self, socket):
-        '''Call when player logs in, gives all existing tanks and alert
-            other clients of entrance'''
+        '''Add socket to the game, send to socket information about existing tanks,
+            and alert all existing players of the new player'''
         servid = len(self.players)
         #relay existing tanks
         socket.write_message(json.dumps({
@@ -160,15 +161,15 @@ class TankInstanceManagerType(object):
         self.activegame = TankInstanceType()
         self.max_players = 2
     def add_player(self, socket):
-        '''When a player logs in, check if there is space in the current games
-            if not, create a new one and add player to it.'''
+        '''Take player socket and add it to a game, or create
+            a new game instance and add socket to the new game'''
         self.activegame.add_player(socket)
         if len(self.activegame.players) == self.max_players:
             self.games.append(self.activegame)
             self.activegame = TankInstanceType()
 
     def remove_player(self, socket):
-        '''Find which socket the player blongs to and remove the player'''
+        '''Given socket, find the game the socket belongs to'''
         if self.activegame.has_player(socket):
             self.activegame.remove_player(socket)
             return
@@ -179,7 +180,8 @@ class TankInstanceManagerType(object):
                     self.games.remove(game)
 
     def processmessage(self, src_socket, message):
-        '''Find out which game the message came from, and relay message'''
+        '''Find the game that src_socket belongs to, an relay message
+            to that game'''
         smessage = json.loads(message)
         if smessage['action'] == 'startGame':
             self.games.append(self.activegame)

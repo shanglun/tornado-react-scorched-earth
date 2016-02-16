@@ -1,37 +1,41 @@
+'''Run a tornado server instance that is connected to the correct handlers'''
+import signal
 import tornado.httpserver
 import tornado.ioloop
 import tornado.options
-
-import signal
-import handlers
-
 from tornado.options import define, options
 
-is_closing = False
+import handlers
 
-def signal_handler(signum, frame):
-	global is_closing
-	is_closing = True
-		
+CLOSING_KEY_PRESSED = False
+
+def signal_handler(_, _unused):
+    '''Set keyboard interrupt flag to exit'''
+    del _
+    del _unused
+    global CLOSING_KEY_PRESSED
+    CLOSING_KEY_PRESSED = True
+
 def try_exit():
-	global is_closing
-	if is_closing:
-		tornado.ioloop.IOLoop.instance().stop()
-		
+    '''If key board interrupt pressed, exit'''
+    if CLOSING_KEY_PRESSED:
+        tornado.ioloop.IOLoop.instance().stop()
 
-define("port",default=8888,help="run on the given port", type=int)
+
+define("port", default=8888, help="run on the given port", type=int)
 
 def main():
-	tornado.options.parse_command_line()
-	signal.signal(signal.SIGINT,signal_handler)
-	application = tornado.web.Application(handlers.urlmap)
-	http_server = tornado.httpserver.HTTPServer(application)
-	http_server.listen(options.port)
-	tornado.ioloop.PeriodicCallback(try_exit,100).start()
-	try:
-		tornado.ioloop.IOLoop.instance().start()
-	except KeyboardInterrupt:
-		tornado.IOLoop.instance().stop()
-	
+    '''Run the server, periodically checking for keyboard interrupt'''
+    tornado.options.parse_command_line()
+    signal.signal(signal.SIGINT, signal_handler)
+    application = tornado.web.Application(handlers.URL_MAP)
+    http_server = tornado.httpserver.HTTPServer(application)
+    http_server.listen(options.port)
+    tornado.ioloop.PeriodicCallback(try_exit, 100).start()
+    try:
+        tornado.ioloop.IOLoop.instance().start()
+    except KeyboardInterrupt:
+        tornado.ioloop.IOLoop.instance().stop()
+
 if __name__ == "__main__":
-	main()
+    main()
