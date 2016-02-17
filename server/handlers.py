@@ -8,7 +8,7 @@ import commtank
 class MainHandler(tornado.web.RequestHandler):
     '''Serves the http page'''
     def get(self):
-        self.write(render('main'))
+        self.write(render('main', {}))
     def data_received(self, data):
         '''Override abstract function to please pylint'''
         pass
@@ -29,22 +29,26 @@ class ShiriToriSocketHandler(tornado.websocket.WebSocketHandler):
         '''Tell shiritori game message handler a socket closed.'''
         self.comm.deregister_socket(self)
     def data_received(self, data):
-        '''Please pylint'''
+        '''Override abstract function to please pylint'''
         pass
 
 class TankSocketHandler(tornado.websocket.WebSocketHandler):
     '''Handles socket communication for the tank game url'''
+    def __init__(self):
+        '''Start a tank manager to receive messages'''
+        super(self.__class__, self).__init__()
+        self.comm = commtank.TankCommManager()
     def open(self):
         '''Tell the tank game handler that socket has opened'''
-        commtank.register_socket(self)
+        self.comm.register_socket(self)
     def on_message(self, message):
         '''Relay message to the tank message handler'''
-        commtank.handle_server_message(self, message)
+        self.comm.handle_server_message(self, message)
     def on_close(self):
         '''Tell tank message handler that a socket closed'''
-        commtank.deregister_socket(self)
+        self.comm.deregister_socket(self)
     def data_received(self, data):
-        '''Please pylint'''
+        '''Override abstract function to please pylint'''
         pass
 
 URL_MAP = [
