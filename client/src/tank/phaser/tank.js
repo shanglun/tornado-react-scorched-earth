@@ -1,3 +1,4 @@
+/* jshint esversion:6 */
 import {getTerrainHeight, getTerrainTop} from './globvars';
 import FireBall from './weapons/fireball';
 import comm from './gamelogic/comm';
@@ -5,12 +6,12 @@ import comm from './gamelogic/comm';
 export default function Tank(game,x,y,tankRsc,turretRsc, serverId){
   const MAX_HEALTH = 200;
   let tank = game.add.sprite(x,y,tankRsc);
-  tank.scale.x = tank.scale.y = .2;
+  tank.scale.x = tank.scale.y = 0.2;
   tank.anchor.setTo(0.5,0.5);
   tank.collideWorldBounds=true;
   game.physics.arcade.enable(tank);
   let turret = game.add.sprite(296,190, turretRsc);
-  turret.scale.x = turret.scale.y = .2;
+  turret.scale.x = turret.scale.y = 0.2;
   turret.anchor.setTo(0,0.5);
   turret.order = 2;
   tank.bringToTop();
@@ -21,7 +22,7 @@ export default function Tank(game,x,y,tankRsc,turretRsc, serverId){
   this.getX = () => tank.x;
   this.getW = () => tank.width;
   let fallTo = 0;
-  this.setFallTo = (newFallTo)=>{fallTo = newFallTo;}
+  this.setFallTo = (newFallTo)=>{fallTo = newFallTo;};
 
   let fireball = new FireBall(game);
   let shootForce = 0;
@@ -41,7 +42,7 @@ export default function Tank(game,x,y,tankRsc,turretRsc, serverId){
     if(!collidingWithTerrain()){
       tank.y += 1;
     }
-  }
+  };
 
   let processWeapons = ()=>{
     if(comm.tankIsMe(serverId)){
@@ -59,14 +60,14 @@ export default function Tank(game,x,y,tankRsc,turretRsc, serverId){
       }
     }
     fireball.update();
-  }
+  };
   this.processDispatchShoot = function(shooterId,shootForce,rotation, xPos, yPos) {
     if(serverId == shooterId){
       turret.rotation = rotation;
       fireball.fire(shootForce, rotation, xPos, yPos);
       game.turnHandler.doneTurn(this.tankId);
     }
-  }
+  };
 
   let processAuxillaries = () => {
     turret.x = tank.x - 6;
@@ -81,7 +82,7 @@ export default function Tank(game,x,y,tankRsc,turretRsc, serverId){
     labelName.y = tank.y - 80;
     let name = comm.getPlayerName(serverId);
     labelName.text = `${name}`;
-  }
+  };
 
   this.update = ()=>{
     if(!tank.alive) {
@@ -96,7 +97,7 @@ export default function Tank(game,x,y,tankRsc,turretRsc, serverId){
       processWeapons();
     }
     processAuxillaries();
-  }
+  };
   this.tankId = -1;
   this.serverId = serverId;
 

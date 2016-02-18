@@ -1,20 +1,24 @@
+/* jshint esversion:6 */
+/* Main shiritori test game */
 import React from 'react';
 import ws from '../socket/socket';
 import {makeEvtHandler, makeOpenHandler, sendNextWord}
   from './CommMethods';
 
+/* The list of words that has been played so far */
 var ShiriToriList = React.createClass({
   render: function(){
     return (
       <ul>
         {this.props.words.map(function(wd){
-          return <li key={wd.word}>{wd.playerName}: {wd.word}</li>
+          return <li key={wd.word}>{wd.playerName}: {wd.word}</li>;
         })}
       </ul>
-    )
+    );
   }
 });
 
+/* Main shiritori component */
 export default React.createClass({
   getInitialState: function(){
     return {
@@ -29,7 +33,7 @@ export default React.createClass({
       ws.onopen = setReady;
     } else {
       setReady();
-    };
+    }
     ws.onmessage = makeEvtHandler(this,ws);
   },
   handleSubmit:function(event){
@@ -42,7 +46,7 @@ export default React.createClass({
       wsLoaded:this.state.wsLoaded,
       words: this.state.words,
       playerName: event.target.value
-    })
+    });
   },
   render: function(){
     return (
@@ -65,6 +69,6 @@ export default React.createClass({
             </input>
           </div>
         </div>
-      </div>)
+      </div>);
   }
 });

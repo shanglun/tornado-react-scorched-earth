@@ -1,5 +1,6 @@
+/* jshint esversion:6 */
 import React from 'react';
-import comm from "./phaser/gamelogic/comm"
+import comm from "./phaser/gamelogic/comm";
 
 let NameDiv = React.createClass({
   render: function(){
@@ -30,7 +31,7 @@ export default React.createClass({
         </button>
         <NameDiv handleSubmitName={this.handleSubmitName}></NameDiv>
       </div>
-    )
+    );
   },
   componentWillMount: function(){
     comm.initInfoComp(this);
@@ -48,13 +49,13 @@ export default React.createClass({
       this.setState({
         started: msg.data.started,
         host: this.state.host
-      })
+      });
     }
     if(msg.command == 'setHost'){
       this.setState({
         started: msg.data.started,
         host: msg.data.host
-      })
+      });
     }
   },
   clickStartGame: function(){
@@ -65,4 +66,4 @@ export default React.createClass({
     comm.setName(evt.target.prefname.value);
     console.log(evt.target.prefname.value);
   }
-})
+});

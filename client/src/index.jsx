@@ -1,3 +1,4 @@
+/* jshint esversion:6 */
 import React from 'react';
 import ReactDOM from 'react-dom';
 import Router, {Route} from 'react-router';
@@ -13,7 +14,7 @@ var routes =   <Router history={hashHistory}>
     <Route path="/shiritori" component={ShiriTori}/>
     <Route path="/tank" component={Tank}/>
     <Route path="*" component={NoMatch}/>
-  </Router>
+  </Router>;
 
 
 ReactDOM.render(

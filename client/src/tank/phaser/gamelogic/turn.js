@@ -1,10 +1,11 @@
+/* jshint esversion:6 */
 export default function TurnHandler(){
   let tankIdList = [];
   let curIdx = 0;
   this.register = (tank) => {
     tank.tankId = tankIdList.length;
     tankIdList.push(tank.tankId);
-  }
+  };
   this.isMyTurn = (tankId) => tankIdList.indexOf(tankId) == curIdx;
   this.doneTurn = (tankId) => {
     if(this.isMyTurn(tankId)){
@@ -13,5 +14,5 @@ export default function TurnHandler(){
         curIdx = 0;
       }
     }
-  }
+  };
 }

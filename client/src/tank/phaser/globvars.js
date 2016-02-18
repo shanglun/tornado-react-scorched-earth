@@ -1,3 +1,5 @@
+/* jshint esversion:6 */
+
 export function getTerrainHeight(game){
   return Math.floor(game.height/3);
 }

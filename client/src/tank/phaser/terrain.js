@@ -1,3 +1,4 @@
+/* jshint esversion:6 */
 import {getTerrainHeight, getTerrainTop} from './globvars';
 
 export default function Terrain(game){
@@ -21,7 +22,7 @@ export default function Terrain(game){
   let markBMD = function(){
     bmd.context.putImageData(bmd.imageData, 0, 0);
     bmd.dirty=true;
-  }
+  };
 
   this.draw = function(){
     for(let i = 0; i < dimx; i++){
@@ -34,7 +35,7 @@ export default function Terrain(game){
       }
     }
     markBMD();
-  }
+  };
 
   this.killTerrain = function (x, y){
     let clickx = x;
@@ -51,7 +52,7 @@ export default function Terrain(game){
       }
     }
     this.draw();
-  }
+  };
   this.calcFallHeight = function(xPos,width){
     let left = Math.floor(xPos - width/2);
     let right = Math.floor(xPos + width/2);
@@ -62,18 +63,18 @@ export default function Terrain(game){
       }
     }
     return smCollHeight;
-  }
+  };
 
   this.bounds = ()=> {
     let bounds = bmd.getBounds();
     bounds.y = bmdTop;
     return bounds;
-  }
+  };
   this.solidityChk = function(xPos, yPos){
     if(xPos > solidityMap.length || (yPos-bmdTop) > solidityMap[0] ){
       return false;
     }
-    return solidityMap[xPos][yPos - bmdTop] != 0;
-  }
+    return solidityMap[xPos][yPos - bmdTop] !== 0;
+  };
   game.add.sprite(0,bmdTop,bmd);
 }

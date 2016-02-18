@@ -1,13 +1,14 @@
+/* jshint esversion:6 */
 import Terrain from './terrain';
 import Tank from './tank';
 import {checkCollisions} from './gamelogic/collision';
-import TH from './gamelogic/turn'
-import comm from './gamelogic/comm'
+import TH from './gamelogic/turn';
+import comm from './gamelogic/comm';
 let game = new Phaser.Game(800,450, Phaser.AUTO,'game');
 
 let main = {
   preload: function() {
-		this.stage.backgroundColor = '#04D90E'//'#B4D9E7';
+		this.stage.backgroundColor = '#04D90E';//'#B4D9E7';
     this.stage.disableVisibilityChange = true; //run while not in focus
     game.load.image("Tank1","static/rcs/tank.png");
     game.load.image("Turret1","static/rcs/nozzle.png");
@@ -29,7 +30,7 @@ let main = {
     for(let tank of this.tanks){
       tank.update();
       checkCollisions(tank.activeBullet(), this.terrain, this.tanks);
-    };
+    }
   },
 };
 

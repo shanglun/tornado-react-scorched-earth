@@ -1,3 +1,4 @@
+/* jshint esversion:6 */
 export default function FireBall(game){
   var bullet = game.add.sprite(0, 0, 'fireball');
   bullet.scale.x= bullet.scale.y= 0.05;
@@ -13,8 +14,8 @@ export default function FireBall(game){
   explosion.scale.y = explosion.scale.x = 2;
   anim.onComplete.add(function(){this.kill();},explosion);
   explosion.kill();
-  var fireTime;
-  var nextFire = fireTime = game.time.now; //use this to control fire rate.
+  var fireTime = game.time.now;
+  var nextFire = game.time.now; //use this to control fire rate.
   this.fire = (force, rotation, xPos, yPos) => {
     if(game.time.now < nextFire) return;
     fireTime = game.time.now; //use this to check explodeable
@@ -24,7 +25,7 @@ export default function FireBall(game){
     bullet.rotation = rotation;
     bullet.body.velocity.x = Math.cos(bullet.rotation) * force;
     bullet.body.velocity.y = Math.sin(bullet.rotation) * force;
-  }
+  };
 
   this.bounds = () => bullet.getBounds();
   this.explodeable = ()=> bullet.alive && fireTime + 300 < game.time.now;
@@ -36,7 +37,7 @@ export default function FireBall(game){
     explosion.y = yPos || bullet.y;
     explosion.animations.play('explode',120,false);
     bullet.kill();
-  }
+  };
   this.getX = ()=>bullet.x;
   this.getY = ()=>bullet.y;
 
@@ -44,7 +45,7 @@ export default function FireBall(game){
     if(!bullet.alive) return;
     bullet.body.velocity.y += 2;
     bullet.rotation = Math.atan2(bullet.body.velocity.y, bullet.body.velocity.x);
-  }
+  };
   this.getBX = ()=>150; //blast X
   this.getBY = ()=>150;
 }

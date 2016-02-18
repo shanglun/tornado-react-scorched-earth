@@ -29,6 +29,7 @@
     "eslint": "^0.11.0-alpha.0",
     "estraverse": "^4.1.1",
     "esutils": "^2.0.2",
+    "jslint": "^0.9.6",
     "webpack": "^1.12.13",
     "webpack-dev-server": "^1.14.1"
   }
