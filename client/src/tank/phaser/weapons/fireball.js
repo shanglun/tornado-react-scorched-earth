@@ -1,4 +1,5 @@
 /* jshint esversion:6 */
+/* Fireball class, the most basic weapon */
 export default function FireBall(game){
   var bullet = game.add.sprite(0, 0, 'fireball');
   bullet.scale.x= bullet.scale.y= 0.05;
@@ -14,9 +15,11 @@ export default function FireBall(game){
   explosion.scale.y = explosion.scale.x = 2;
   anim.onComplete.add(function(){this.kill();},explosion);
   explosion.kill();
+  //use these to control fire rate and explosion timing.
   var fireTime = game.time.now;
-  var nextFire = game.time.now; //use this to control fire rate.
+  var nextFire = game.time.now;
   this.fire = (force, rotation, xPos, yPos) => {
+    //Fire the bullet with given force and rotation, from (xPos,yPos).
     if(game.time.now < nextFire) return;
     fireTime = game.time.now; //use this to check explodeable
     nextFire = fireTime + 500; //twice per second
@@ -31,6 +34,7 @@ export default function FireBall(game){
   this.explodeable = ()=> bullet.alive && fireTime + 300 < game.time.now;
   this.explodeableTank = ()=> bullet.alive && fireTime + 500 < game.time.now; //grace period
   this.explode = (xPos,yPos)=>{
+    //Trigger explosion animation at (xPos, yPos) if the tank can be exploded.
     if(!this.explodeable()) return;
     explosion.revive();
     explosion.x = xPos || bullet.x;
@@ -42,6 +46,7 @@ export default function FireBall(game){
   this.getY = ()=>bullet.y;
 
   this.update = ()=>{
+    //Update bullet position and rotation if bullet is in flight
     if(!bullet.alive) return;
     bullet.body.velocity.y += 2;
     bullet.rotation = Math.atan2(bullet.body.velocity.y, bullet.body.velocity.x);

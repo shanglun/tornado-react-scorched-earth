@@ -3,6 +3,7 @@ import React from 'react';
 import game from './phaser/main';
 import InfoDiv from './Info';
 
+//main tank game div to hose the phaser canvas, plus additional UI elements.
 export default React.createClass({
   render: function(){
     return (<div>

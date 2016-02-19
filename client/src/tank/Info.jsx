@@ -2,6 +2,9 @@
 import React from 'react';
 import comm from "./phaser/gamelogic/comm";
 
+//The main UI div outside of the phaser game canvas.
+//Sets names, starts games, etc
+
 let NameDiv = React.createClass({
   render: function(){
     let btnClass = 'btn btn-success ';

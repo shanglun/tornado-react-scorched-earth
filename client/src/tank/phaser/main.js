@@ -6,6 +6,7 @@ import TH from './gamelogic/turn';
 import comm from './gamelogic/comm';
 let game = new Phaser.Game(800,450, Phaser.AUTO,'game');
 
+//Interface to the phaser library
 let main = {
   preload: function() {
 		this.stage.backgroundColor = '#04D90E';//'#B4D9E7';

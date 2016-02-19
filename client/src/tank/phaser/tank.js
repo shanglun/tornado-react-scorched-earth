@@ -45,6 +45,8 @@ export default function Tank(game,x,y,tankRsc,turretRsc, serverId){
   };
 
   let processWeapons = ()=>{
+    //Update the weapon it fired. If the tank belongs to the player,
+    //update turret position and force as well
     if(comm.tankIsMe(serverId)){
       if(game.turnHandler.isMyTurn(this.tankId)){
         turret.rotation = game.physics.arcade.angleToPointer(turret);
@@ -62,6 +64,8 @@ export default function Tank(game,x,y,tankRsc,turretRsc, serverId){
     fireball.update();
   };
   this.processDispatchShoot = function(shooterId,shootForce,rotation, xPos, yPos) {
+    //Process shoot message from the server -
+    //shoot with shootForce with rotation at (xPos,yPos) if the tankId matches the shooterId
     if(serverId == shooterId){
       turret.rotation = rotation;
       fireball.fire(shootForce, rotation, xPos, yPos);
@@ -70,6 +74,7 @@ export default function Tank(game,x,y,tankRsc,turretRsc, serverId){
   };
 
   let processAuxillaries = () => {
+    //Process labels and turret, etc that moves with the tank.
     turret.x = tank.x - 6;
     turret.y = tank.y - 10;
     labelHealth.x = tank.x-10;
@@ -85,6 +90,7 @@ export default function Tank(game,x,y,tankRsc,turretRsc, serverId){
   };
 
   this.update = ()=>{
+    //Kill auxillaries if needed, check weapons, and see if the tank needs to fall
     if(!tank.alive) {
       labelHealth.kill();
       labelForce.kill();

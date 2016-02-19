@@ -2,6 +2,7 @@
 /*Handles socket communication between the tank game and server.*/
 /*Todo: Refactor init to take callbacks, not actual game object and tanklist */
 function Communicator(){
+  /* Singleton object tracks the current state of server communicaiton */
   let ws;
   let infoComp;
   let started = false;
