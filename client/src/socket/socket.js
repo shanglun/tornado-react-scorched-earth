@@ -2,9 +2,9 @@
 /* Opens a connection from shiritori game to the server */
 let ws;
 if (window.location.protocol == "https:") {
-  ws = new WebSocket("wss://scorchedearthtornado.heroukapp.com:5000/socket");
+  ws = new WebSocket("wss://localhost:8888/socket");
 } else {
-  ws = new WebSocket("ws://scorchedearthtornado.heroukapp.com:5000/socket");
+  ws = new WebSocket("ws://localhost:8888/socket");
 }
 ws.onopen = function(){console.log("ws opened");};
 ws.onmessage = function(evt){console.log("evt: " + evt.data);};

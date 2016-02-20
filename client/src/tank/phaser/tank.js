@@ -95,6 +95,7 @@ export default function Tank(game,x,y,tankRsc,turretRsc, serverId){
       labelHealth.kill();
       labelForce.kill();
       turret.kill();
+      game.turnHandler.doneTurn(this.tankId); // you're dead, you're done.
       return;
     }
     processFall();

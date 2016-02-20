@@ -15,38 +15,34 @@ class MainHandler(tornado.web.RequestHandler):
 
 class ShiriToriSocketHandler(tornado.websocket.WebSocketHandler):
     '''Manage sockets from the Shiritori game url'''
-    def __init__(self):
-        '''Start a shiritori game message handler'''
-        super(self.__class__, self).__init__()
-        self.comm = comm.ShiriToriCommType()
+    '''Create a static comm type to be shared across sessions.'''
+    scomm = comm.ShiriToriCommType()
     def open(self):
         '''Send new socket information to game message handler'''
-        self.comm.register_socket(self)
+        self.scomm.register_socket(self)
     def on_message(self, message):
         '''Relay message to the shiritori game message handler'''
-        self.comm.handle_server_message(self, message)
+        self.scomm.handle_server_message(self, message)
     def on_close(self):
         '''Tell shiritori game message handler a socket closed.'''
-        self.comm.deregister_socket(self)
+        self.scomm.deregister_socket(self)
     def data_received(self, data):
         '''Override abstract function to please pylint'''
         pass
 
 class TankSocketHandler(tornado.websocket.WebSocketHandler):
     '''Handles socket communication for the tank game url'''
-    def __init__(self):
-        '''Start a tank manager to receive messages'''
-        super(self.__class__, self).__init__()
-        self.comm = commtank.TankCommManager()
+    '''Create a static comm type to be shared across sessions.'''
+    tcomm = commtank.TankCommManager()
     def open(self):
         '''Tell the tank game handler that socket has opened'''
-        self.comm.register_socket(self)
+        self.tcomm.register_socket(self)
     def on_message(self, message):
         '''Relay message to the tank message handler'''
-        self.comm.handle_server_message(self, message)
+        self.tcomm.handle_server_message(self, message)
     def on_close(self):
         '''Tell tank message handler that a socket closed'''
-        self.comm.deregister_socket(self)
+        self.tcomm.deregister_socket(self)
     def data_received(self, data):
         '''Override abstract function to please pylint'''
         pass

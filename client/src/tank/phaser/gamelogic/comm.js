@@ -35,9 +35,9 @@ function Communicator(){
   this.init = (game, tankList) =>{
     /* Initialize the game connection to server. Set necessary callbacks.*/
     if (window.location.protocol == "https:") {
-      ws = new WebSocket("wss://scorchedearthtornado.heroukapp.com:5000/socket/tank");
+      ws = new WebSocket("wss://localhost:8888/socket/tank");
     } else {
-      ws = new WebSocket("ws://scorchedearthtornado.heroukapp.com:5000/socket/tank");
+      ws = new WebSocket("ws://localhost:8888/socket/tank");
     }
     ws.onopen = () => {};
 
