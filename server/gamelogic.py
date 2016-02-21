@@ -159,7 +159,7 @@ class TankInstanceManagerType(object):
         '''Set up active games container, as well as initial game'''
         self.games = []
         self.activegame = TankInstanceType()
-        self.max_players = 2
+        self.max_players = 4
     def add_player(self, socket):
         '''Take player socket and add it to a game, or create
             a new game instance and add socket to the new game'''
