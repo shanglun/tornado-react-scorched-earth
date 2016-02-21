@@ -26,6 +26,7 @@ export default function Tank(game,x,y,tankRsc,turretRsc, serverId){
 
   let fireball = new FireBall(game);
   let shootForce = 0;
+  let shootForceUp = true;
   this.activeBullet = ()=> fireball;
 
   this.bounds = ()=>tank.getBounds();
@@ -51,8 +52,9 @@ export default function Tank(game,x,y,tankRsc,turretRsc, serverId){
       if(game.turnHandler.isMyTurn(this.tankId)){
         turret.rotation = game.physics.arcade.angleToPointer(turret);
         if(game.input.activePointer.isDown){
-          shootForce = shootForce > 500? 0: shootForce + 3;
-
+          if(shootForce <= 0) shootForceUp = true;
+          if(shootForce >= 500) shootForceUp = false;
+          shootForce = shootForceUp? shootForce + 3 : shootForce - 3;
         } else {
           if(shootForce > 0){
               this.serverDispatchShoot(serverId, shootForce, turret.rotation, turret.x, turret.y);

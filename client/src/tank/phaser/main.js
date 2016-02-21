@@ -15,6 +15,10 @@ let main = {
     game.load.image("Turret1","static/rcs/nozzle.png");
     game.load.image("Tank2","static/rcs/purpletank.png");
     game.load.image("Turret2","static/rcs/purplenozzle.png");
+    game.load.image("Tank3","static/rcs/greentank.png");
+    game.load.image("Turret3","static/rcs/greennozzle.png");
+    game.load.image("Tank4","static/rcs/redtank.png");
+    game.load.image("Turret4","static/rcs/rednozzle.png");
     game.load.image('fireball','static/rcs/fireball.png');
     game.load.spritesheet('explosion','static/rcs/explosion.png',64,64,23);
   },
