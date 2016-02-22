@@ -57,7 +57,7 @@ export default function Tank(game,x,y,tankRsc,turretRsc, serverId){
           shootForce = shootForceUp? shootForce + 3 : shootForce - 3;
         } else {
           if(shootForce > 0){
-              this.serverDispatchShoot(serverId, shootForce, turret.rotation, turret.x, turret.y);
+              comm.serverDispatchShoot(serverId, shootForce, turret.rotation, turret.x, turret.y);
               shootForce = 0;
           }
         }
@@ -65,15 +65,16 @@ export default function Tank(game,x,y,tankRsc,turretRsc, serverId){
     }
     fireball.update();
   };
-  this.processDispatchShoot = function(shooterId,shootForce,rotation, xPos, yPos) {
+  let processDispatchShoot = function(data) {
     //Process shoot message from the server -
     //shoot with shootForce with rotation at (xPos,yPos) if the tankId matches the shooterId
-    if(serverId == shooterId){
-      turret.rotation = rotation;
-      fireball.fire(shootForce, rotation, xPos, yPos);
+    if(serverId == data.shooterId){
+      turret.rotation = data.rotation;
+      fireball.fire(data.shootForce, data.rotation, data.xPos, data.yPos);
       game.turnHandler.doneTurn(this.tankId);
     }
   };
+  comm.registerAction('shoot', processDispatchShoot, this);
 
   let processAuxillaries = () => {
     //Process labels and turret, etc that moves with the tank.

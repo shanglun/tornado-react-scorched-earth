@@ -38,6 +38,18 @@ export default React.createClass({
   },
   componentWillMount: function(){
     comm.initInfoComp(this);
+    comm.registerAction('makeTanks', (data)=>{
+      this.setState({
+        started: this.state.started,
+        host: comm.amHost()
+      });
+    }, this);
+    comm.registerAction('startGame',(data)=>{
+      this.setState({
+        started: true,
+        host: this.state.host
+      });
+    },this);
   },
   getInitialState: function(){
     return {
@@ -46,20 +58,6 @@ export default React.createClass({
     };
   },
   componentDidMount: function(){
-  },
-  commMessage: function(msg){
-    if(msg.command == "setStartState"){
-      this.setState({
-        started: msg.data.started,
-        host: this.state.host
-      });
-    }
-    if(msg.command == 'setHost'){
-      this.setState({
-        started: msg.data.started,
-        host: msg.data.host
-      });
-    }
   },
   clickStartGame: function(){
     comm.startGame();

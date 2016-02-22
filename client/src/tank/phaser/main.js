@@ -25,8 +25,18 @@ let main = {
   create: function() {
     this.tanks = [];
     game.Tank = Tank;
-    game.turnHandler = new TH();
-    comm.init(game, this.tanks);
+    game.turnHandler = new TH(
+      game.add.text(20, 35, `Player1's turn`,
+        { font: "15px Arial", fill: "#ffffff" }));
+    comm.init();
+    comm.registerAction('makeTanks', (data)=>{
+      for(let tankdata of data.tanks){
+        let tank = new game.Tank(game, tankdata.xPos, tankdata.yPos,
+          tankdata.TankRc,tankdata.TurretRc, tankdata.serverId);
+        this.tanks.push(tank);
+        game.turnHandler.register(tank);
+      }
+    },this);
 
     this.terrain = new Terrain(game);
     this.terrain.draw();

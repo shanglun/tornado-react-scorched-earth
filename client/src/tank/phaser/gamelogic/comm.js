@@ -1,17 +1,44 @@
 /* jshint esversion:6 */
 /*Handles socket communication between the tank game and server.*/
 /*Todo: Refactor init to take callbacks, not actual game object and tanklist */
+function Dispatcher(){
+  /* An object to keept track of action dispatching exclusively.  */
+  let dispTbl = {};
+  window.dispTbl = dispTbl;
+  /* Register items to the dispatch table */
+  this.registerAction = (serverCmd, callBack, context)=>{
+    if(!dispTbl.hasOwnProperty(serverCmd)){
+      dispTbl[serverCmd] = [{
+        callBack: callBack,
+        context:context
+      }];
+    } else {
+      dispTbl[serverCmd].push({
+        callBack: callBack,
+        context: context
+      });
+    }
+  };
+
+  this.chkDispatch = (serverCmd, data)=>{
+    if(dispTbl.hasOwnProperty(serverCmd)){
+      for(let cbk of dispTbl[serverCmd]){
+        cbk.callBack.call(cbk.context,data);
+      }
+    }
+  };
+}
+
 function Communicator(){
   /* Singleton object tracks the current state of server communicaiton */
   let ws;
-  let infoComp;
   let started = false;
   let myTankId = -1;
   let pNames = ["player1", "player2", "player3", "player4"];
-  this.initInfoComp = (comp) => {
-    /*Register the information component so we can display information later*/
-    infoComp = comp;
-  };
+  let dispatcher = new Dispatcher();
+  this.registerAction= (serverCmd, callBack, context)=>{
+    dispatcher.registerAction(serverCmd, callBack, context);
+  }
   this.startGame = () => {
     /* Ask the server to lock the session and start the game */
     ws.send(JSON.stringify({
@@ -32,7 +59,8 @@ function Communicator(){
       }
     }));
   };
-  this.init = (game, tankList) =>{
+
+  this.init = () =>{
     /* Initialize the game connection to server. Set necessary callbacks.*/
     if (window.location.protocol == "https:") {
       ws = new WebSocket("wss://localhost:8888/socket/tank");
@@ -41,62 +69,27 @@ function Communicator(){
     }
     ws.onopen = () => {};
 
-    let registerTank = (tank)=>{
-      /*Register the tank to the socket connection to send shoot messages*/
-      tank.serverDispatchShoot = (shooterId, shootForce,rotation, xPos, yPos)=>{
-        /* Send a shoot message to the server */
-        ws.send(JSON.stringify({
-          'action':'shoot',
-          'shooterId': shooterId,
-          'shootForce': shootForce,
-          'rotation': rotation,
-          'xPos': xPos,
-          'yPos': yPos
-        }));
-      };
+    this.serverDispatchShoot = (shooterId, shootForce,rotation, xPos, yPos)=>{
+      /* Send a shoot message to the server */
+      ws.send(JSON.stringify({
+        'action':'shoot',
+        'shooterId': shooterId,
+        'shootForce': shootForce,
+        'rotation': rotation,
+        'xPos': xPos,
+        'yPos': yPos
+      }));
     };
 
     ws.onmessage = (evt) => {
       /* Parse message from the server and act accordingly. */
       let msg = JSON.parse(evt.data);
-
-      if(msg.command == 'makeTanks'){
-        /* Create tank objects as instructed by server */
-        myTankId = msg.data.yourTank;
-        for(let tankdata of msg.data.tanks){
-          let tank = new game.Tank(game, tankdata.xPos, tankdata.yPos,
-            tankdata.TankRc,tankdata.TurretRc, tankdata.serverId);
-          tankList.push(tank);
-          registerTank(tank);
-          game.turnHandler.register(tank);
-        }
-        infoComp.commMessage({
-          command:'setHost',
-          data:{
-            host: this.amHost()
-          }
-        });
-      }
-      if(msg.command == 'shoot'){
-        for(let tank of tankList){
-          tank.processDispatchShoot(msg.data.shooterId,
-            msg.data.shootForce,msg.data.rotation, msg.data.xPos, msg.data.yPos);
-        }
-      }
-      if(msg.command == 'startGame'){
-        started = true;
-        infoComp.commMessage({
-          command:'setStartState',
-          data: {
-            started: started,
-          }
-        });
-      }
-
-      if(msg.command == "playerName"){
-        pNames = msg.data.names;
-      }
+      dispatcher.chkDispatch(msg.command, msg.data);
     };
+
+    this.registerAction('makeTanks', (data)=>{myTankId = data.yourTank;},this);
+    this.registerAction('startGame', (data)=>{started = true;}, this);
+    this.registerAction('playerName', (data)=>{pNames = data.names;}, this);
   };
 }
 
