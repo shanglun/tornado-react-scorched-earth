@@ -57,7 +57,14 @@ export default function Tank(game,x,y,tankRsc,turretRsc, serverId){
           shootForce = shootForceUp? shootForce + 3 : shootForce - 3;
         } else {
           if(shootForce > 0){
-              comm.serverDispatchShoot(serverId, shootForce, turret.rotation, turret.x, turret.y);
+              comm.dispatchAction('shootRequest', {
+                shooterId:serverId,
+                shootForce:shootForce,
+                rotation: turret.rotation,
+                xPos: turret.x,
+                yPos: turret.y
+              });
+              //comm.serverDispatchShoot(serverId, shootForce, turret.rotation, turret.x, turret.y);
               shootForce = 0;
           }
         }

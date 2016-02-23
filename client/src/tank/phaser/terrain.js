@@ -79,7 +79,7 @@ export default function Terrain(game){
   };
   this.solidityChk = function(xPos, yPos){
     //check for terrain solidity at game position (xPos,yPos) - performs conversion first.
-    if(xPos > solidityMap.length || (yPos-bmdTop) > solidityMap[0] ){
+    if(xPos > solidityMap.length - 1 || (yPos-bmdTop) > solidityMap[0] ){
       return false;
     }
     return solidityMap[xPos][yPos - bmdTop] !== 0;

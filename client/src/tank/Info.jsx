@@ -37,7 +37,6 @@ export default React.createClass({
     );
   },
   componentWillMount: function(){
-    comm.initInfoComp(this);
     comm.registerAction('makeTanks', (data)=>{
       this.setState({
         started: this.state.started,
@@ -60,11 +59,11 @@ export default React.createClass({
   componentDidMount: function(){
   },
   clickStartGame: function(){
-    comm.startGame();
+    comm.dispatchAction('startGameRequest');
   },
   handleSubmitName: function(evt){
     evt.preventDefault();
-    comm.setName(evt.target.prefname.value);
-    console.log(evt.target.prefname.value);
+    comm.dispatchAction('setNameRequest',{name: evt.target.prefname.value});
+    evt.target.prefname.value = "";
   }
 });
