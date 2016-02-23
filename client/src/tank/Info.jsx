@@ -56,8 +56,6 @@ export default React.createClass({
       host: false
     };
   },
-  componentDidMount: function(){
-  },
   clickStartGame: function(){
     comm.dispatchAction('startGameRequest');
   },

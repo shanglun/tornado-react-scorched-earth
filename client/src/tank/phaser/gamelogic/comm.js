@@ -31,10 +31,6 @@ function Dispatcher(){
 
 function Communicator(){
   /* Singleton object tracks the current state of server communicaiton */
-  let ws;
-  let started = false;
-  let myTankId = -1;
-  let pNames = ["player1", "player2", "player3", "player4"];
   let dispatcher = new Dispatcher();
   this.registerAction= (cmd, callBack, context)=>{
     dispatcher.registerAction(cmd, callBack, context);
@@ -43,13 +39,18 @@ function Communicator(){
     dispatcher.dispatch(cmd,data||{});
   }
 
-  this.gameStarted = () => started;
-  this.amHost = () => myTankId === 0;
-  this.getPlayerName = (serverId) => pNames[serverId];
-  this.tankIsMe = (tankId) => myTankId == tankId;
-
   this.init = () =>{
     /* Initialize the game connection to server. Set necessary callbacks.*/
+    let ws;
+    let started = false;
+    let myTankId = -1;
+    let pNames = ["player1", "player2", "player3", "player4"];
+
+    this.gameStarted = () => started;
+    this.amHost = () => myTankId === 0;
+    this.getPlayerName = (serverId) => pNames[serverId];
+    this.tankIsMe = (tankId) => myTankId == tankId;
+
     if (window.location.protocol == "https:") {
       ws = new WebSocket("wss://localhost:8888/socket/tank");
     } else {
