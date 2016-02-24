@@ -94,6 +94,12 @@ function Communicator(){
         'yPos': data.yPos
       }));
     }, this);
+    this.registerAction('turretRotRequest', (data)=>{
+      ws.send(JSON.stringify({
+        'action':'turretRot',
+        'rotation': data.rotation
+      }));
+    }, this);
   };
 }
 

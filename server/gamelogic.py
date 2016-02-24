@@ -50,9 +50,9 @@ TURRET_RCS = ['Turret1', 'Turret2', 'Turret3', 'Turret4']
 def maketank(tank_id, existing):
     '''Takes and tank id. Returns the information for a single tank
         if the tank is for a new player, place the tank higher'''
-    ypos = 250
+    ypos = 150
     if not existing:
-        ypos = 200
+        ypos = 100
     return {
         'xPos': SPAWN_XPOS[tank_id],
         'yPos': ypos,
@@ -136,6 +136,14 @@ class TankInstanceType(object):
                     'command': 'playerName',
                     'data': {
                         'names': self.playernames
+                    }
+                }))
+        elif message['action'] == 'turretRot':
+            for socket in self.players:
+                socket.write_message(json.dumps({
+                    'command': 'moveTurret',
+                    'data': {
+                        'rotation': message['rotation']
                     }
                 }))
         else: #for potential debugging

@@ -33,7 +33,7 @@ export default function Tank(game,x,y,tankRsc,turretRsc, serverId){
   tank.health = 200;
   let labelHealth = game.add.text(20, 35, `hp: ${MAX_HEALTH}/${MAX_HEALTH}`,
     { font: "12px Arial", fill: "#ffffff" });
-  let labelForce = game.add.text(20,35, `force: ${shootForce}`,
+  let labelForce = game.add.text(20,35, `force: unknown`,
     { font: "12px Arial", fill: "#ffffff" });
   let labelName = game.add.text(20,35, `name: ${'player'}`,
     { font: "12px Arial", fill: "#ffffff" });
@@ -51,6 +51,7 @@ export default function Tank(game,x,y,tankRsc,turretRsc, serverId){
     if(comm.tankIsMe(serverId)){
       if(game.turnHandler.isMyTurn(this.tankId)){
         turret.rotation = game.physics.arcade.angleToPointer(turret);
+        comm.dispatchAction('turretRotRequest',{rotation:turret.rotation});
         if(game.input.activePointer.isDown){
           if(shootForce <= 0) shootForceUp = true;
           if(shootForce >= 500) shootForceUp = false;
@@ -72,6 +73,11 @@ export default function Tank(game,x,y,tankRsc,turretRsc, serverId){
     }
     fireball.update();
   };
+  comm.registerAction('moveTurret',(data)=>{
+    if(game.turnHandler.isMyTurn(this.tankId)){
+      turret.rotation = data.rotation;
+    }
+  }, this);
   let processDispatchShoot = function(data) {
     //Process shoot message from the server -
     //shoot with shootForce with rotation at (xPos,yPos) if the tankId matches the shooterId
@@ -92,7 +98,9 @@ export default function Tank(game,x,y,tankRsc,turretRsc, serverId){
     labelHealth.text = `hp: ${tank.health}/${MAX_HEALTH}`;
     labelForce.x = tank.x - 10;
     labelForce.y = tank.y - 65;
-    labelForce.text = `force: ${shootForce}`;
+    if(comm.tankIsMe(serverId)){
+      labelForce.text = `force: ${shootForce}`;
+    }
     labelName.x = tank.x - 10;
     labelName.y = tank.y - 80;
     let name = comm.getPlayerName(serverId);
