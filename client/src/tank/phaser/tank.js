@@ -51,7 +51,7 @@ export default function Tank(game,x,y,tankRsc,turretRsc, serverId){
     if(comm.tankIsMe(serverId)){
       if(game.turnHandler.isMyTurn(this.tankId)){
         turret.rotation = game.physics.arcade.angleToPointer(turret);
-        comm.dispatchAction('turretRotRequest',{rotation:turret.rotation});
+        //comm.dispatchAction('turretRotRequest',{rotation:turret.rotation});
         if(game.input.activePointer.isDown){
           if(shootForce <= 0) shootForceUp = true;
           if(shootForce >= 500) shootForceUp = false;
