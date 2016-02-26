@@ -2,7 +2,7 @@
 import {getTerrainHeight, getTerrainTop} from './globvars';
 
 //handle the destructible terrain
-export default function Terrain(game){
+export default function Terrain(game, randomizer){
   let dimx = game.width;
   let dimy = getTerrainHeight(game);
   let bmd = game.add.bitmapData(dimx,dimy);
@@ -69,6 +69,24 @@ export default function Terrain(game){
     }
     return smCollHeight;
   };
+
+  (function(randomizer){
+    //randomize the terrain.
+    //must randomize on the server.
+    let spawnPositions = [100, 300, 500, 700];
+    for(let i = 0; i < 4; i++){
+      //mark up to 2/3 of the terrain for pred-estruction.
+      let killHeight = randomizer[i]/10 * dimy;
+      for(let j = spawnPositions[i]-100; j < spawnPositions[i]+100; j++){
+        for(let k = 0; k < killHeight; k++){
+          if(collisionHeights[j]<k){
+            collisionHeights[j] = k;
+          }
+          solidityMap[j][k] = 0;
+        }
+      }
+    }
+  })(randomizer);
 
   this.bounds = ()=> {
     //get the bounds (not solidity) of the terrain as a rough check to see if

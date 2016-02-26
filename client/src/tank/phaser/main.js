@@ -29,6 +29,7 @@ let main = {
       game.add.text(20, 35, `Player1's turn`,
         { font: "15px Arial", fill: "#ffffff" }));
     comm.init();
+
     comm.registerAction('makeTanks', (data)=>{
       for(let tankdata of data.tanks){
         let tank = new game.Tank(game, tankdata.xPos, tankdata.yPos,
@@ -36,10 +37,13 @@ let main = {
         this.tanks.push(tank);
         game.turnHandler.register(tank);
       }
+      if(data.terrainRand !== undefined){
+        this.terrain = new Terrain(game, data.terrainRand);
+        this.terrain.draw();
+      }
     },this);
 
-    this.terrain = new Terrain(game);
-    this.terrain.draw();
+
   },
   update: function() {
     for(let tank of this.tanks){

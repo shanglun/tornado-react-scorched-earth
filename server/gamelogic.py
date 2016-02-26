@@ -1,5 +1,7 @@
 '''Class types to manage game instances and handle communications from client'''
 import json
+import random
+import datetime
 
 class ShiriToriInstanceType(object):
     '''Manages a game of shiritori'''
@@ -76,6 +78,10 @@ class TankInstanceType(object):
         self.players = []
         self.tanks = []
         self.playernames = ['player1', 'player2', 'player3', 'player4']
+        random.seed(datetime.datetime.now().time())
+        self.terrainRandomizers = []
+        for i in range(5):
+            self.terrainRandomizers.append(random.randint(1,10))
     def add_player(self, socket):
         '''Add socket to the game, send to socket information about existing tanks,
             and alert all existing players of the new player'''
@@ -85,7 +91,8 @@ class TankInstanceType(object):
             'command': 'makeTanks',
             'data': {
                 'yourTank': servid,
-                'tanks': maketankgroup(servid)
+                'tanks': maketankgroup(servid),
+                'terrainRand': self.terrainRandomizers
             }
         }))
         for i in range(len(self.players)):
@@ -94,7 +101,7 @@ class TankInstanceType(object):
                 'command':'makeTanks',
                 'data': {
                     'yourTank': i,
-                    'tanks': [maketank(servid, False)]
+                    'tanks': [maketank(servid, False)],
                 }
             }))
         self.players.append(socket)
