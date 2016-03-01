@@ -9,14 +9,18 @@ let checkTankDamage = function(tank, explosionX, explosionY, blastX, blastY){
   }
 };
 
+export function setTankFallTo(terrain, tank){
+  tank.setFallTo(terrain.calcFallHeight(
+    tank.getX(),
+    tank.getW()
+  ));
+}
+
 let processCollision = function(bullet, terrain, tanks){
   /* Called when bullet needs to explode. Destroy terrain and damage tank as needed */
   terrain.killTerrain(bullet.getX(), bullet.getY());
   for(let tank of tanks){
-    tank.setFallTo(terrain.calcFallHeight(
-      tank.getX(),
-      tank.getW()
-    ));
+    setTankFallTo(terrain, tank)
     checkTankDamage(tank,bullet.getX(), bullet.getY(), bullet.getBX(), bullet.getBY());
   }
   bullet.explode();

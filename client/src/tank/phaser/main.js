@@ -1,7 +1,7 @@
 /* jshint esversion:6 */
 import Terrain from './terrain';
 import Tank from './tank';
-import {checkCollisions} from './gamelogic/collision';
+import {checkCollisions, setTankFallTo} from './gamelogic/collision';
 import TH from './gamelogic/turn';
 import comm from './gamelogic/comm';
 let game = new Phaser.Game(800,450, Phaser.AUTO,'game');
@@ -34,12 +34,18 @@ let main = {
       for(let tankdata of data.tanks){
         let tank = new game.Tank(game, tankdata.xPos, tankdata.yPos,
           tankdata.TankRc,tankdata.TurretRc, tankdata.serverId);
+        if(this.terrain !== undefined){
+          setTankFallTo(this.terrain, tank);
+        }
         this.tanks.push(tank);
         game.turnHandler.register(tank);
       }
       if(data.terrainRand !== undefined && this.terrain == undefined){
         this.terrain = new Terrain(game, data.terrainRand);
         this.terrain.draw();
+        for(let tank of this.tanks){
+          setTankFallTo(this.terrain, tank);
+        }
       }
     },this);
 
