@@ -37,7 +37,7 @@ let main = {
         this.tanks.push(tank);
         game.turnHandler.register(tank);
       }
-      if(data.terrainRand !== undefined){
+      if(data.terrainRand !== undefined && this.terrain == undefined){
         this.terrain = new Terrain(game, data.terrainRand);
         this.terrain.draw();
       }
