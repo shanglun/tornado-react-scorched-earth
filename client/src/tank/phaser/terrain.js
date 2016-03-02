@@ -75,13 +75,7 @@ export default function Terrain(game, randomizer){
     //must randomize on the server.
     let spawnPositions = [100, 300, 500, 700];
     let killHtFunc = (x)=>{
-      /*Map x to a height y*/
-      /*for(let i = 0; i < 4; i++){
-        if(x > spawnPositions[i] - 100 && x <= spawnPositions[i] + 100){
-          return randomizer[i]/10 * dimy;
-        }
-      }*/
-      return Math.abs(((randomizer[0] + randomizer[1]) *7) *Math.pow(Math.sin(x/((randomizer[2] + randomizer[3])*7)),1));
+      return Math.abs(((randomizer[0] + randomizer[1]) *7)*Math.pow(Math.sin(x/((randomizer[2])*15)),1)) + x*(randomizer[3] - 3)/100;
     }
       //mark up to 2/3 of the terrain for pre-destruction.
     for(let j = 0; j< collisionHeights.length; j++){
