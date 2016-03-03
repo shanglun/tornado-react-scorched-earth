@@ -36,6 +36,7 @@ function Communicator(){
     dispatcher.registerAction(cmd, callBack, context);
   };
   this.dispatchAction = (cmd, data) => {
+    console.log("action dispatching");
     dispatcher.dispatch(cmd,data||{});
   }
 
